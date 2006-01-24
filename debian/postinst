@@ -1,0 +1,17 @@
+#! /bin/sh
+
+pkg=nsca
+
+case "$1" in
+	configure)
+		;;
+	abort-upgrade|abort-remove|abort-deconfigure)
+		exit 0
+		;;
+	*)
+		echo "postinst called with unknown argument"
+		exit 1
+		;;
+esac
+
+#DEBHELPER#

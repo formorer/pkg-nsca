@@ -1,0 +1,10 @@
+#! /bin/sh
+
+if [ "$1" = "purge" ] ; then
+	# to remain backwards-compatible with inetd and the like:
+	if which update-inetd >/dev/null 2>&1; then
+		update-inetd --group OTHER --remove '5667\t\tstream\ttcp\tnowait\tnagios\t/usr/sbin/tcpd\t/usr/sbin/nsca -c /etc/nsca.cfg -- inetd' || true
+	fi
+fi
+
+#DEBHELPER#

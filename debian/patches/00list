@@ -1,0 +1,3 @@
+01_send_nsca.cfg.dpatch
+02_nsca_foreground.dpatch
+03_errors_to_stderr.dpatch

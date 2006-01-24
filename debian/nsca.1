@@ -1,0 +1,50 @@
+.TH nsca "1" "December 2005" "nsca"
+.SH NAME
+nsca \- Nagios Service Check Acceptor
+
+.SH SYNOPSIS
+.B nsca \-c <config_file> [\-f] [--inetd|--daemon|--single]
+.br
+.Xc
+
+.SH DESCRIPTION
+.B nsca
+This program is designed to accept passive check results from
+remote hosts that use the send_nsca(1) utility.  It can run as a service
+under inetd or xinetd (read the docs for info on this), or as a
+standalone daemon.
+
+.SH OPTIONS
+.TP
+config_file
+Name of config file to use
+.TP
+\-f
+run in the foreground (do not fork)
+.TP
+\-\-inetd
+Run as a service under inetd or xinetd
+.TP
+\-\-daemon
+Run as a standalone multi\-process daemon
+.TP
+\-\-single
+Run as a standalone single\-process daemon
+
+.SH SEE ALSO
+.TP
+nsca(1)
+
+.SH FILES
+.TP
+/etc/nsca.cfg
+nsca server configuration
+.TP
+/etc/send_nsca.cfg
+send_nsca configuration
+
+.SH AUTHOR
+NSCA was written by Ethan Galstad <nagios@nagios.org>.
+This manpage was written by sean finney <seanius@debian.org> for 
+Debian (but it may be freely used by others).
+

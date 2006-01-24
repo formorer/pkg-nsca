@@ -1,0 +1,21 @@
+nsca for Debian
+---------------
+
+This is the debian package of nsca.  by default nsca works with an
+init script /etc/init.d/nsca, however, it can also be run from the
+various inetd implementations.
+
+if you want nsca to work with inetd, you need to add the following
+line to your inetd.conf:
+
+5667           stream  tcp     nowait  nagios  /usr/sbin/tcpd  /usr/sbin/nsca -c /etc/nsca.cfg --inetd
+
+or optionally the xinetd configuration file in the examples directory.
+
+also add following line to /etc/services:
+
+nsca            5667/tcp        # NSCA
+
+Edit the nsca/send_nsca config files to fit your needs and reload inetd.
+
+ -- sean finney <seanius@debian.org>  Sat, 10 Dec 2005 22:04:20 +0100

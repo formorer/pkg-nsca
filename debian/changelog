@@ -1,0 +1,62 @@
+nsca (2.4-6) unstable; urgency=low
+
+  * Sean Finney:
+    - errors and warnings now go to stderr (closes: #294097).
+    - move away from this debmake stuff for building, because
+      i don't understand it and it's getting to the point i have
+      to work with it.
+    - manpages by yours truly
+    - nsca now uses the init script by default.  it can be disabled
+      in favor of inetd support, but the default will now be init
+      based.
+
+ -- sean finney <seanius@debian.org>  Sat, 10 Dec 2005 21:17:36 +0100
+
+nsca (2.4-5) unstable; urgency=low
+
+  * Sean Finney:
+    - include a simple init script for those who would prefer to avoid
+      using inetd (closes: #336712).  for the time being, inetd is still
+      the default so no runlevel symlinks are installed, but this may
+      change in the future.
+    - include a patch to let nsca run without forking to the background;
+      this is necessary for the above feature.
+    - default to using /etc/send_nsca.cfg instead of ./send_nsca.cfg.
+      thanks to Juraj Bednar for pointing this out (closes: #342017).
+
+ -- sean finney <seanius@debian.org>  Mon, 05 Dec 2005 11:50:24 +0100
+
+nsca (2.4-4) unstable; urgency=low
+
+  * nsca is now part of the pkg-nagios alioth project.
+  * Sean Finney
+    - update Maintainer/Uploaders to reflect Maintainership.
+    - update Depends and Suggests to reflect that nsca does not require
+      nagios to be installed, which should keep the installation footprint
+      much smaller (closes: #324821, #270796).
+    - update Standards-Version to 3.6.2.
+
+ -- sean finney <seanius@debian.org>  Sat, 29 Oct 2005 14:07:22 +0200
+
+nsca (2.4-3) unstable; urgency=low
+
+  * Adapted the path to the more recent nagios packages (Closes: #282589)
+
+ -- Cajus Pollmeier <cajus@debian.org>  Tue, 23 Nov 2004 19:43:01 +0100
+
+nsca (2.4-2) unstable; urgency=low
+
+  * Added build dependency on debstd which is part of debmake.
+    (Closes: #245508)
+
+ -- Cajus Pollmeier <cajus@debian.org>  Fri, 23 Apr 2004 18:04:01 +0200
+
+nsca (2.4-1) unstable; urgency=low
+
+  * Initial upload. (Closes: #241405)
+
+ -- Cajus Pollmeier <cajus@debian.org>  Mon, 29 Mar 2004 15:39:36 +0200
+
+Local variables:
+mode: debian-changelog
+End:

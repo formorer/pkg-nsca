@@ -1,0 +1,31 @@
+Source: nsca
+Section: net
+Priority: optional
+Maintainer: Debian Nagios Maintainer Group <pkg-nagios-devel@lists.alioth.debian.org>
+Uploaders: sean finney <seanius@debian.org>, Cajus Pollmeier <cajus@debian.org>
+Standards-Version: 3.6.2
+Build-Depends: libmcrypt-dev, dpatch, debhelper (>= 4.0.0)
+
+Package: nsca
+Architecture: any
+Depends: ${shlibs:Depends}
+Suggests: nagios, nagios-plugins-basic | nagios-plugins
+Description: Nagios service monitor agent
+ The purpose of this addon is to allow you to send service check
+ results to a central monitoring server running Nagios in a secure
+ manner.
+ .
+ Nagios is a host/service/network monitoring and management system. It has
+ the following features:
+ .
+ o  Monitoring of network services (via TCP port, SMTP, POP3, HTTP, NNTP,
+      PING, etc.)
+ o  Plugin interface to allow for user-developed service checks
+ o  Contact notifications when problems occur and get resolved (via email,
+      pager, or user-defined method)
+ o  Ability to define event handlers to be run during service or host events
+      (for proactive problem resolution)
+ o  Web output (current status, notifications, problem history, log file, etc.)
+ .
+ Nagios was written in C and is designed to be easy to understand and modify
+ to fit your own needs.

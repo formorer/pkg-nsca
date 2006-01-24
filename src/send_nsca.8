@@ -1,0 +1,53 @@
+.TH send_nsca 8 "July 2003"
+.\" Copyright (c) 2000 Ethan Galstad (nagios@nagios.org) 
+.SH NAME
+send_nsca \- Nagios service check submitter
+.SH SYNOPSIS
+\fBsend_nsca\fP [\fIoptions\fP]
+
+.SH DESCRIPTION
+This utility is used to send passive check results to the NSCA daemon.
+Host and Service check data that is to be sent to the NSCA daemon
+is read from standard input. Input should be provided in the following
+format (tab-delimited unless overriden with -d command line argument,
+one entry per line):
+.TP
+Service Checks:
+.TP
+<host_name>[tab]<svc_description>[tab]<return_code>\\
+[tab]<plugin_output>[newline]
+.TP
+Host Checks:
+.TP
+<host_name>[tab]<return_code>[tab]<plugin_output>[newline]
+.SH OPTIONS
+.TP 12
+.BI \-c "\fR config"
+This option changes the config file for \fBsend_nsca\fP. Default is
+\fI/etc/send_nsca.cfg\fP.
+.TP 12
+.BI \-H "\fR host"
+The IP address of the host running the NSCA daemon.
+.TP 12
+.BI \-p port
+The port on which the daemon is running - default is 5667.
+.TP 12
+.BI \-to seconds
+Number of seconds before connection attempt times out (default is
+10 seconds).
+.TP 12
+.BI \-d delim
+Delimiter to use when parsing input (defaults to a tab).
+.TP
+.SH FILES
+.PD 0
+.B /etc/send_nsca.cfg
+.br
+.PD
+.SH BUGS
+There are no known bugs.  To file bug reports, see \fBAUTHORS\fP below.
+.SH SEE ALSO
+send_nsca(8)
+.SH AUTHORS
+Ethan Galstad <nagios@nagios.org> 
+

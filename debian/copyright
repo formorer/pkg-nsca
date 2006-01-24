@@ -1,0 +1,11 @@
+This package was debianized by Cajus Pollmeier <cajus@debian.org>
+on Mon, 29 Mar 2004 15:39:36 +0200.
+
+It was downloaded from http://www.nagios.org/
+
+Upstream Author: Ethan Galstad <nagios@nagios.org>
+
+Copyright:
+
+Nsca is released under the terms of the GPL license.
+See /usr/share/common-licenses/GPL for the full license.

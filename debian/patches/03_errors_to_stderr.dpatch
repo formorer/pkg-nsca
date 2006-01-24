@@ -1,0 +1,215 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 03_errors_to_stderr.dpatch by  <seanius@debian.org>
+##
+## DP: send errors to stderr, where they belong
+
+@DPATCH@
+diff -urNad sid~/src/netutils.c sid/src/netutils.c
+--- sid~/src/netutils.c	2002-10-25 05:59:49.000000000 +0200
++++ sid/src/netutils.c	2005-12-10 21:13:42.000000000 +0100
+@@ -61,7 +61,7 @@
+ 		/* else do a DNS lookup */
+ 		hp=gethostbyname((const char *)host_name);
+ 		if(hp==NULL){
+-			printf("Invalid host name '%s'\n",host_name);
++			fprintf(stderr,"Invalid host name '%s'\n",host_name);
+ 			return STATE_UNKNOWN;
+ 		        }
+ 
+@@ -70,14 +70,14 @@
+ 
+ 	/* map transport protocol name to protocol number */
+ 	if(((ptrp=getprotobyname(proto)))==NULL){
+-		printf("Cannot map \"%s\" to protocol number\n",proto);
++		fprintf(stderr,"Cannot map \"%s\" to protocol number\n",proto);
+ 		return STATE_UNKNOWN;
+ 	        }
+ 
+ 	/* create a socket */
+ 	*sd=socket(PF_INET,(!strcmp(proto,"udp"))?SOCK_DGRAM:SOCK_STREAM,ptrp->p_proto);
+ 	if(*sd<0){
+-		printf("Socket creation failed\n");
++		fprintf(stderr,"Socket creation failed\n");
+ 		return STATE_UNKNOWN;
+ 	        }
+ 
+@@ -86,16 +86,16 @@
+ 	if(result<0){
+ 		switch(errno){  
+ 		case ECONNREFUSED:
+-			printf("Connection refused by host\n");
++			fprintf(stderr,"Connection refused by host\n");
+ 			break;
+ 		case ETIMEDOUT:
+-			printf("Timeout while attempting connection\n");
++			fprintf(stderr,"Timeout while attempting connection\n");
+ 			break;
+ 		case ENETUNREACH:
+-			printf("Network is unreachable\n");
++			fprintf(stderr,"Network is unreachable\n");
+ 			break;
+ 		default:
+-			printf("Connection refused or timed out\n");
++			fprintf(stderr,"Connection refused or timed out\n");
+ 		        }
+ 
+ 		return STATE_CRITICAL;
+diff -urNad sid~/src/nsca.c sid/src/nsca.c
+--- sid~/src/nsca.c	2005-12-10 21:12:35.000000000 +0100
++++ sid/src/nsca.c	2005-12-10 21:14:48.000000000 +0100
+@@ -93,7 +93,7 @@
+         if(result!=OK || show_help==TRUE || show_license==TRUE || show_version==TRUE){
+ 
+ 		if(result!=OK)
+-			printf("Incorrect command line arguments supplied\n");
++			fprintf(stderr,"Incorrect command line arguments supplied\n");
+                 printf("\n");
+                 printf("NSCA - Nagios Service Check Acceptor\n");
+                 printf("Copyright (c) 2000-2003 Ethan Galstad (nagios@nagios.org)\n");
+diff -urNad sid~/src/send_nsca.c sid/src/send_nsca.c
+--- sid~/src/send_nsca.c	2005-12-10 21:12:35.000000000 +0100
++++ sid/src/send_nsca.c	2005-12-10 21:16:34.000000000 +0100
+@@ -78,7 +78,7 @@
+ 	if(result!=OK || show_help==TRUE || show_license==TRUE || show_version==TRUE){
+ 
+ 		if(result!=OK)
+-			printf("Incorrect command line arguments supplied\n");
++			fprintf(stderr,"Incorrect command line arguments supplied\n");
+ 		printf("\n");
+ 		printf("NSCA Client %s\n",PROGRAM_VERSION);
+ 		printf("Copyright (c) 2000-2003 Ethan Galstad (nagios@nagios.org)\n");
+@@ -131,7 +131,7 @@
+ 
+ 	/* exit if there are errors... */
+ 	if(result==ERROR){
+-		printf("Error: Config file '%s' contained errors...\n",config_file);
++		fprintf(stderr,"Error: Config file '%s' contained errors...\n",config_file);
+ 		do_exit(STATE_CRITICAL);
+ 		}
+ 
+@@ -151,7 +151,7 @@
+ 
+ 	/* we couldn't connect */
+ 	if(result!=STATE_OK){
+-		printf("Error: Could not connect to host %s on port %d\n",server_name,server_port);
++		fprintf(stderr,"Error: Could not connect to host %s on port %d\n",server_name,server_port);
+ 		do_exit(STATE_CRITICAL);
+ 	        }
+ 
+@@ -162,7 +162,7 @@
+ 	/* read the initialization packet containing the IV and timestamp */
+ 	result=read_init_packet(sd);
+ 	if(result!=OK){
+-		printf("Error: Could not read init packet from server\n");
++		fprintf(stderr,"Error: Could not read init packet from server\n");
+ 		close(sd);
+ 		do_exit(STATE_CRITICAL);
+ 	        }
+@@ -173,7 +173,7 @@
+ 
+ 	/* initialize encryption/decryption routines with the IV we received from the server */
+         if(encrypt_init(password,encryption_method,received_iv,&CI)!=OK){
+-		printf("Error: Failed to initialize encryption libraries for method %d\n",encryption_method);
++		fprintf(stderr,"Error: Failed to initialize encryption libraries for method %d\n",encryption_method);
+ 		close(sd);
+ 		do_exit(STATE_CRITICAL);
+ 	        }
+@@ -264,14 +264,14 @@
+ 
+ 		/* there was an error sending the packet */
+ 		if(rc==-1){
+-			printf("Error: Could not send data to host\n");
++			fprintf(stderr,"Error: Could not send data to host\n");
+ 			close(sd);
+ 			do_exit(STATE_UNKNOWN);
+ 	                }
+ 
+ 		/* for some reason we didn't send all the bytes we were supposed to */
+ 		else if(bytes_to_send<sizeof(send_packet)){
+-			printf("Warning: Sent only %d of %d bytes to host\n",rc,sizeof(send_packet));
++			fprintf(stderr,"Warning: Sent only %d of %d bytes to host\n",rc,sizeof(send_packet));
+ 			close(sd);
+ 			return STATE_UNKNOWN;
+ 		        }
+@@ -337,13 +337,13 @@
+ 
+         /* recv() error or server disconnect */
+         if(rc<=0){
+-                printf("Error: Server closed connection before init packet was received\n");
++                fprintf(stderr,"Error: Server closed connection before init packet was received\n");
+                 return ERROR;
+                 }
+ 
+         /* we couldn't read the correct amount of data, so bail out */
+         else if(bytes_to_recv!=sizeof(receive_packet)){
+-                printf("Error: Init packet from server was too short (%d bytes received, %d expected)\n",bytes_to_recv,sizeof(receive_packet));
++                fprintf(stderr,"Error: Init packet from server was too short (%d bytes received, %d expected)\n",bytes_to_recv,sizeof(receive_packet));
+                 return ERROR;
+                 }
+ 
+@@ -452,7 +452,7 @@
+ /* handle timeouts */
+ void alarm_handler(int sig){
+ 
+-	printf("Error: Timeout after %d seconds\n",socket_timeout);
++	fprintf(stderr,"Error: Timeout after %d seconds\n",socket_timeout);
+ 
+ 	do_exit(STATE_CRITICAL);
+         }
+@@ -474,7 +474,7 @@
+ 
+ 	/* exit if we couldn't open the config file */
+ 	if(fp==NULL){
+-		printf("Could not open config file '%s' for reading.\n",filename);
++		fprintf(stderr,"Could not open config file '%s' for reading.\n",filename);
+ 		return ERROR;
+ 	        }	
+ 
+@@ -495,7 +495,7 @@
+ 		varname=strtok(input_buffer,"=");
+ 		if(varname==NULL){
+ 
+-			printf("No variable name specified in config file '%s' - Line %d\n",filename,line);
++			fprintf(stderr,"No variable name specified in config file '%s' - Line %d\n",filename,line);
+ 
+ 			return ERROR;
+ 		        }
+@@ -504,7 +504,7 @@
+ 		varvalue=strtok(NULL,"\n");
+ 		if(varvalue==NULL){
+ 
+-			printf("No variable value specified in config file '%s' - Line %d\n",filename,line);
++			fprintf(stderr,"No variable value specified in config file '%s' - Line %d\n",filename,line);
+ 
+ 			return ERROR;
+ 		        }
+@@ -512,7 +512,7 @@
+ 		if(strstr(input_buffer,"password")){
+ 			if(strlen(varvalue)>sizeof(password)-1){
+ 
+-				printf("Password is too long in config file '%s' - Line %d\n",filename,line);
++				fprintf(stderr,"Password is too long in config file '%s' - Line %d\n",filename,line);
+ 
+ 				return ERROR;
+ 			        }
+@@ -575,17 +575,17 @@
+ 				break;
+ #endif
+ 			default:
+-				printf("Invalid encryption method (%d) in config file '%s' - Line %d\n",encryption_method,filename,line);
++				fprintf(stderr,"Invalid encryption method (%d) in config file '%s' - Line %d\n",encryption_method,filename,line);
+ #ifndef HAVE_LIBMCRYPT
+ 				if(encryption_method>=2)
+-					printf("Client was not compiled with mcrypt library, so encryption is unavailable.\n");
++					fprintf(stderr,"Client was not compiled with mcrypt library, so encryption is unavailable.\n");
+ #endif
+ 				return ERROR;
+ 			        }
+ 		        }
+ 
+ 		else{
+-			printf("Unknown option specified in config file '%s' - Line %d\n",filename,line);
++			fprintf(stderr,"Unknown option specified in config file '%s' - Line %d\n",filename,line);
+ 
+ 			return ERROR;
+ 		        }

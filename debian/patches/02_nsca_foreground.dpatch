@@ -1,0 +1,53 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 02_nsca_foreground.dpatch by  <seanius@debian.org>
+##
+## DP: allow nsca to run in the foreground, which makes
+## DP: starting/stopping/restarting easier as we can use
+## DP: external tools like s-s-d to track the pid
+
+@DPATCH@
+diff -urNad sid~/src/nsca.c sid/src/nsca.c
+--- sid~/src/nsca.c	2005-12-05 11:24:12.000000000 +0100
++++ sid/src/nsca.c	2005-12-05 11:32:44.000000000 +0100
+@@ -60,6 +60,8 @@
+ int show_license=FALSE;
+ int show_version=FALSE;
+ 
++int foreground=FALSE;
++
+ static FILE *command_file_fp=NULL;
+ 
+ struct handler_entry{
+@@ -109,10 +111,11 @@
+ 	        }
+ 
+ 	if(result!=OK || show_help==TRUE){
+-                printf("Usage: %s -c <config_file> [mode]\n",argv[0]);
++                printf("Usage: %s -c <config_file> [-f] [mode]\n",argv[0]);
+                 printf("\n");
+                 printf("Options:\n");
+ 		printf(" <config_file> = Name of config file to use\n");
++		printf(" [-f]        = run in the foreground, do not fork\n");
+ 		printf(" [mode]        = Determines how NSCA should run. Valid modes:\n");
+                 printf("   --inetd     = Run as a service under inetd or xinetd\n");
+                 printf("   --daemon    = Run as a standalone multi-process daemon\n");
+@@ -182,7 +185,7 @@
+ 
+         case SINGLE_PROCESS_DAEMON:
+                 /* daemonize and start listening for requests... */
+-                if(fork()==0){
++                if(foreground || fork()==0){
+ 
+                         /* we're a daemon - set up a new process group */
+                         setsid();
+@@ -1121,6 +1124,10 @@
+ 		else if(!strcmp(argv[x-1],"-V") || !strcmp(argv[x-1],"--version"))
+ 			show_version=TRUE;
+ 
++		/* run in the foreground */
++		else if(!strcmp(argv[x-1],"-f"))
++			foreground=TRUE;
++
+ 		else if(!strcmp(argv[x-1],"-d") || !strcmp(argv[x-1],"--daemon"))
+                         mode=MULTI_PROCESS_DAEMON;
+ 

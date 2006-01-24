@@ -1,0 +1,56 @@
+.TH send_nsca "1" "December 2005" "nsca"
+.SH NAME
+send_nsca \- send passive check results to an NSCA daemon
+
+.SH SYNOPSIS
+.B send_nsca \-H <host_address> [\-p port] [\-to to_sec] [\-d delim] [ \-c config_file]
+.br
+.Xc
+
+.SH DESCRIPTION
+.B send_nsca
+This utility is used to send passive check results to the NSCA daemon.
+Host and Service check data that is to be sent to the NSCA daemon is
+read from standard input. Input should be provided in the following
+format (tab\-delimited unless overriden with \-d command line argument,
+one entry per line):
+.TP
+Service Checks
+<host_name>[tab]<svc_description>[tab]<return_code>[tab]<plugin_output>[newline]
+.TP
+Host Checks:
+<host_name>[tab]<return_code>[tab]<plugin_output>[newline]
+
+.SH OPTIONS
+.TP
+host_address
+The IP address of the host running the NSCA daemon
+.TP
+port
+The port on which the daemon is running \- default is 5667
+.TP
+to_sec
+Number of seconds before connection attempt times out.  (default timeout is 10 seconds)
+.TP
+delim
+Delimiter to use when parsing input (defaults to a tab)
+.TP
+config_file
+Name of config file to use
+
+.SH SEE ALSO
+.TP
+nsca(1)
+
+.SH FILES
+.TP
+/etc/nsca.cfg
+nsca server configuration
+.TP
+/etc/send_nsca.cfg
+send_nsca configuration
+
+.SH AUTHOR
+NSCA was written by Ethan Galstad <nagios@nagios.org>.
+This manpage was written by sean finney <seanius@debian.org> for 
+Debian (but it may be freely used by others).

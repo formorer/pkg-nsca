@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# simple debian init script for nsca
+# by sean finney <seanius@debian.org>
+
+DAEMON=/usr/sbin/nsca
+NAME=nsca
+DESC="Nagios Service Check Acceptor"
+CONF=/etc/nsca.cfg
+OPTS="-f --daemon -c $CONF"
+PIDFILE="/var/run/nsca.pid"
+
+###
+
+SSDOPTS="--pidfile $PIDFILE --make-pidfile"
+SSD="/sbin/start-stop-daemon $SSDOPTS"
+
+if [ ! -x $DAEMON ]; then
+	exit 0
+fi
+
+die(){
+	echo $@
+	exit 1
+}
+
+case "$1" in
+start)
+	echo -n "Starting $DESC: "
+	$SSD -S -b --exec $DAEMON -- $OPTS || die "ERROR: could not start $NAME."
+	echo "$NAME."
+;;
+stop)
+	echo -n "Stopping $DESC: "
+	$SSD -K --exec $DAEMON -- $OPTS || die "ERROR: could not stop $NAME."
+	echo "$NAME."
+;;
+restart|reload|force-reload)
+	$0 stop
+	$0 start
+;;
+esac

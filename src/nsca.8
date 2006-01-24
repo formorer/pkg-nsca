@@ -1,0 +1,55 @@
+.TH nsca 8 "July 2003"
+.\" Copyright (c) 2000 Ethan Galstad (nagios@nagios.org) 
+.SH NAME
+nsca \- Nagios service check acceptor
+.SH SYNOPSIS
+\fBnsca\fP [\fIoptions\fP]
+
+.SH DESCRIPTION
+The purpose of \fBnsca\fP is to allow you to send service check
+results to a central monitoring server running Nagios in a secure
+manner.
+.PP
+This program runs as a daemon on the central server that runs Nagios.
+It listens for host and service check results from remote machines 
+(sent using the send_nsca program described below).  Upon receiving
+data from a remote client, the daemon will make a *very* basic attempt
+at validating the data it has received from the client.  This is done
+by decrypting the data with the password stored in the nsca.cfg
+file.  If the decrypted data looks okay (i.e. it was originally
+encrypted by the send_ncsa program using the same password), the daemon
+will make entries in the Nagios external command file telling Nagios
+to process the host or service check result.
+.PP
+Notes: The \fBnsca\fP daemon must have sufficient rights to open the Nagios
+command file for writing.  Also, Nagios will only process passive
+service check results that it finds in the external command file
+if the service has been defined in the host config file (i.e. hosts.cfg)
+and it is being monitored.
+.SH OPTIONS
+.TP 12
+.BI \-c "\fR config"
+This option changes the config file for \fBnsca\fP. Default is
+\fI/etc/nsca.cfg\fP.
+.TP 12
+.BI \--inetd 
+Run \fBnsca\fP as a service under inetd or xinetd.
+.TP 12
+.BI \--daemon 
+Run \fBnsca\fP as a standalone multi-process daemon.
+.TP 12
+.BI \--single 
+Run \fBnsca\fP as a standalone single-process daemon.
+.TP
+.SH FILES
+.PD 0
+.B /etc/nsca.cfg
+.br
+.PD
+.SH BUGS
+There are no known bugs.  To file bug reports, see \fBAUTHORS\fP below.
+.SH SEE ALSO
+send_nsca(8)
+.SH AUTHORS
+Ethan Galstad <nagios@nagios.org> 
+

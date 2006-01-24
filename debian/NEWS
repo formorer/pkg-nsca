@@ -1,0 +1,7 @@
+nsca no longer uses inetd, but instead runs in a daemon mode.
+
+this should make lives easier as before it was only compatible with
+one inetd, and registering/configuring with the different inetd
+services is a conceptually broken process anyway.
+
+ -- sean finney <seanius@debian.org>  Sat, 10 Dec 2005 21:57:09 +0100

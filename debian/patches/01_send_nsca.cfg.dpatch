@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01_send_nsca.cfg.dpatch by  <seanius@debian.org>
+##
+## DP: default to /etc/send_nsca.cfg instead of ./send_nsca.cfg
+
+@DPATCH@
+diff -urNad sid~/src/send_nsca.c sid/src/send_nsca.c
+--- sid~/src/send_nsca.c	2003-07-24 02:08:36.000000000 +0200
++++ sid/src/send_nsca.c	2005-12-05 11:09:21.000000000 +0100
+@@ -25,7 +25,7 @@
+ int server_port=DEFAULT_SERVER_PORT;
+ char server_name[MAX_HOST_ADDRESS_LENGTH];
+ char password[MAX_INPUT_BUFFER]="";
+-char config_file[MAX_INPUT_BUFFER]="send_nsca.cfg";
++char config_file[MAX_INPUT_BUFFER]="/etc/send_nsca.cfg";
+ char delimiter[2]="\t";
+ 
+ char received_iv[TRANSMITTED_IV_SIZE];
