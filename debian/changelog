@@ -1,3 +1,15 @@
+nsca (2.5-1) unstable; urgency=low
+
+  * New upstream release
+
+  [sean finney]
+  * add patch to fix localstatedir file locations in nsca.cfg
+  * fix for upstream shuffling of some files' location in the tarball.
+  * lintian fixes in manpage
+  * migrate to svn while we're at it.
+
+ -- sean finney <seanius@debian.org>  Sun, 12 Feb 2006 19:22:13 +0100
+
 nsca (2.4-6) unstable; urgency=low
 
   * Sean Finney:

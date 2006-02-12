@@ -16,10 +16,10 @@ format (tab\-delimited unless overriden with \-d command line argument,
 one entry per line):
 .TP
 Service Checks
-<host_name>[tab]<svc_description>[tab]<return_code>[tab]<plugin_output>[newline]
+<host>\\t<svc_description>\\t<return_code>\\t<plugin_output>\\n
 .TP
 Host Checks:
-<host_name>[tab]<return_code>[tab]<plugin_output>[newline]
+<host>\\t<return_code>\\t<plugin_output>\\n
 
 .SH OPTIONS
 .TP
@@ -53,4 +53,4 @@ send_nsca configuration
 .SH AUTHOR
 NSCA was written by Ethan Galstad <nagios@nagios.org>.
 This manpage was written by sean finney <seanius@debian.org> for 
-Debian (but it may be freely used by others).
+Debian (but it may be freely used, modified, and redistributed by others).

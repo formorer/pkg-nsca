@@ -1,0 +1,35 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 04_nsca.cfg_nagios_vs_nagios.dpatch by  <seanius@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad nsca-2.5~/sample-config/nsca.cfg.in nsca-2.5/sample-config/nsca.cfg.in
+--- nsca-2.5~/sample-config/nsca.cfg.in	2006-01-22 01:14:55.000000000 +0100
++++ nsca-2.5/sample-config/nsca.cfg.in	2006-02-12 21:13:43.000000000 +0100
+@@ -56,8 +56,12 @@
+ # COMMAND FILE
+ # This is the location of the Nagios command file that the daemon
+ # should write all service check results that it receives.
+-
+-command_file=@localstatedir@/rw/nagios.cmd
++# Note to debian users: nagios 1.x and nagios 2.x have
++# different default locations for this file.  this is the
++# default location for nagios 1.x:
++command_file=/var/run/nagios/nagios.cmd
++# and this is the default location for nagios2:
++#command_file=/var/run/nagios2/rw/nagios.cmd
+ 
+ 
+ # ALTERNATE DUMP FILE
+@@ -70,8 +74,7 @@
+ # it starts Nagios.  Or you may simply choose to ignore any
+ # check results received while Nagios was not running...
+ 
+-alternate_dump_file=@localstatedir@/rw/nsca.dump
+-
++alternate_dump_file=/var/run/nagios/nsca.dump
+ 
+ 
+ # AGGREGATED WRITES OPTION

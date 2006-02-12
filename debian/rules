@@ -41,13 +41,13 @@ install-stamp: build-stamp
 	dh_installdirs
 	dh_installchangelogs Changelog
 	dh_installdocs README
-	dh_installexamples nsca.xinetd
+	dh_installexamples sample-config/nsca.xinetd
 	dh_installinit -u defaults 30
-	dh_installmanpages debian/nsca.1 debian/send_nsca.1
+	dh_installman debian/nsca.1 debian/send_nsca.1
 	install -D -m 755 src/nsca ${NSCA}/usr/sbin
-	install -D -m 640 nsca.cfg ${NSCA}/etc
+	install -D -m 640 sample-config/nsca.cfg ${NSCA}/etc
 	install -D -m 755 src/send_nsca ${SEND_NSCA}/usr/sbin
-	install -D -m 640 send_nsca.cfg ${SEND_NSCA}/etc
+	install -D -m 640 sample-config/send_nsca.cfg ${SEND_NSCA}/etc
 	install -D -m 644 debian/nsca.lintian-overrides ${NSCA}/usr/share/lintian/overrides/nsca
 	touch install-stamp
 
