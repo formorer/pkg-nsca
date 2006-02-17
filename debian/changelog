@@ -1,8 +1,10 @@
 nsca (2.5-2) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+  * remove install calls from debian/rules, use dh_install to ease
+    backporting. Adapt lintian override file to nagios2 method.
 
- -- sean finney <seanius@debian.org>  Sun, 12 Feb 2006 21:29:41 +0100
+ -- Marc Haber <mh+debian-packages@zugschlus.de>  Fri, 17 Feb 2006 10:52:25 +0000
 
 nsca (2.5-1) unstable; urgency=low
 
