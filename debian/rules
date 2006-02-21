@@ -9,6 +9,9 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
+# Should we build nsca-client
+buildclientpackage=no
+
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
@@ -19,47 +22,58 @@ include /usr/share/dpatch/dpatch.make
 NSCA=debian/nsca
 SEND_NSCA=debian/nsca
 
+# set variables for packages to build
+ifeq ($(buildclientpackage),yes)
+buildpackages=nsca nsca-client
+else
+buildpackages=nsca
+endif
+
+# generate -pexim4-base -peximon4 ... commandline for debhelper
+dhbuildpackages=$(addprefix -p,$(buildpackages))
+
 build: build-stamp
 build-stamp: patch-stamp
-	dh_testdir
+	dh_testdir $(dhbuildpackages)
 	./configure --with-nsca-user=nagios --with-nsca-grp=nogroup --with-nsca-port=5667 --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib/nagios
 	$(MAKE) all
 	touch build-stamp
 
 clean: unpatch
-	dh_testdir
-	dh_testroot
+	dh_testdir $(dhbuildpackages)
+	dh_testroot $(dhbuildpackages)
 	if test -f Makefile; then $(MAKE) distclean; fi
 	dh_clean
 	rm -f {build,install}-stamp
 
 install: install-stamp
 install-stamp: build-stamp
-	dh_testdir
-	dh_testroot
+	dh_testdir $(dhbuildpackages)
+	dh_testroot $(dhbuildpackages)
 	dh_clean -k
-	dh_installdirs
-	dh_installchangelogs Changelog
-	dh_installdocs README
-	dh_installexamples sample-config/nsca.xinetd
-	dh_installinit -u defaults 30
-	dh_installman debian/nsca.1 debian/send_nsca.1
-	dh_install
+	dh_installdirs $(dhbuildpackages)
+	dh_installchangelogs $(dhbuildpackages) Changelog
+	dh_installdocs $(dhbuildpackages) README
+	dh_installexamples $(dhbuildpackages)
+	dh_installinit $(dhbuildpackages) -u defaults 30
+	dh_installman  $(dhbuildpackages)
+	dh_install $(dhbuildpackages)
 	chmod 640 debian/nsca/etc/nsca.cfg debian/nsca/etc/send_nsca.cfg
+	chmod 640 debian/nsca-client/etc/send_nsca.cfg || true
 	touch install-stamp
 
 binary: binary-indep binary-arch
 binary-indep: 
 binary-arch: install-stamp
-	dh_testdir
-	dh_testroot
-	dh_strip
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+	dh_testdir $(dhbuildpackages)
+	dh_testroot $(dhbuildpackages)
+	dh_strip $(dhbuildpackages)
+	dh_compress $(dhbuildpackages)
+	dh_fixperms $(dhbuildpackages)
+	dh_installdeb $(dhbuildpackages)
+	dh_shlibdeps $(dhbuildpackages)
+	dh_gencontrol $(dhbuildpackages)
+	dh_md5sums $(dhbuildpackages)
+	dh_builddeb $(dhbuildpackages)
 
 .PHONY: binary binary-arch binary-indep clean install

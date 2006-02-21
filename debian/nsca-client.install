@@ -1,0 +1,2 @@
+src/send_nsca usr/sbin
+sample-config/send_nsca.cfg etc
