@@ -1,6 +1,12 @@
 nsca (2.5-1.1) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+
+  [sean finney]
+  * (INCOMPLETE) Add debconf logic for whether nsca service should
+    be installed at boot time.
+
+  [marc haber]
   * remove install calls from debian/rules, use dh_install to ease
     backporting. Adapt lintian override file to nagios2 method.
   * Add possibility to locally build an nsca-client package which cannot

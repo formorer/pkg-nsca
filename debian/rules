@@ -44,6 +44,7 @@ clean: unpatch
 	dh_testroot $(dhbuildpackages)
 	if test -f Makefile; then $(MAKE) distclean; fi
 	dh_clean
+	debconf-updatepo
 	rm -f {build,install}-stamp
 
 install: install-stamp
@@ -51,6 +52,7 @@ install-stamp: build-stamp
 	dh_testdir $(dhbuildpackages)
 	dh_testroot $(dhbuildpackages)
 	dh_clean -k
+	dh_installdebconf
 	dh_installdirs $(dhbuildpackages)
 	dh_installchangelogs $(dhbuildpackages) Changelog
 	dh_installdocs $(dhbuildpackages) README
