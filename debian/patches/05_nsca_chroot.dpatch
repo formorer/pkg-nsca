@@ -1,0 +1,83 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 05_nsca_chroot.dpatch by  <seanius@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad nsca-2.5~/sample-config/nsca.cfg.in nsca-2.5/sample-config/nsca.cfg.in
+--- nsca-2.5~/sample-config/nsca.cfg.in	2006-02-24 19:26:49.000000000 +0100
++++ nsca-2.5/sample-config/nsca.cfg.in	2006-02-24 19:26:49.000000000 +0100
+@@ -42,13 +42,22 @@
+ 
+ nsca_group=@nsca_grp@
+ 
++# NSCA CHROOT
++# If specified, determines a directory into which the nsca daemon
++# will perform a chroot(2) operation before dropping its privileges.
++# for the security conscious this can add a layer of protection in
++# the event that the nagios daemon is compromised.  
++# 
++# NOTE: if you specify this option, the command file will be opened
++#       relative to this directory.
++
++#nsca_chroot=@nsca_chroot@
+ 
+ 
+ # DEBUGGING OPTION
+ # This option determines whether or not debugging
+ # messages are logged to the syslog facility. 
+ # Values: 0 = debugging off, 1 = debugging on
+-
+ debug=0
+ 
+ 
+diff -urNad nsca-2.5~/src/nsca.c nsca-2.5/src/nsca.c
+--- nsca-2.5~/src/nsca.c	2006-02-24 19:26:49.000000000 +0100
++++ nsca-2.5/src/nsca.c	2006-02-24 19:27:45.000000000 +0100
+@@ -54,6 +54,8 @@
+ char *nsca_user=NULL;
+ char *nsca_group=NULL;
+ 
++char *nsca_chroot=NULL;
++
+ int show_help=FALSE;
+ int show_license=FALSE;
+ int show_version=FALSE;
+@@ -143,7 +145,7 @@
+ 
+ 
+         /* open a connection to the syslog facility */
+-        openlog("nsca",LOG_PID,LOG_DAEMON); 
++        openlog("nsca",LOG_PID|LOG_NDELAY,LOG_DAEMON); 
+ 
+ 	/* make sure the config file uses an absolute path */
+ 	if(config_file[0]!='/'){
+@@ -175,6 +177,17 @@
+         /* generate the CRC 32 table */
+         generate_crc32_table();
+ 
++	/* chroot if configured to do so */
++	if(nsca_chroot != NULL){
++		if(chdir(nsca_chroot)){
++			syslog(LOG_ERR, "can not chdir into chroot directory.");
++			do_exit(STATE_UNKNOWN);
++		}
++		if(chroot(".")){
++			syslog(LOG_ERR, "can not perform chroot operation.");
++			do_exit(STATE_UNKNOWN);
++		}
++	}
+ 
+ 	/* how should we handle client connections? */
+         switch(mode){
+@@ -411,6 +424,9 @@
+                 else if(!strcmp(varname,"nsca_group"))
+ 			nsca_group=strdup(varvalue);
+ 
++                else if(!strcmp(varname,"nsca_chroot"))
++			nsca_chroot=strdup(varvalue);
++
+ 		else{
+                         syslog(LOG_ERR,"Unknown option specified in config file '%s' - Line %d\n",filename,line);
+ 

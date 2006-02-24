@@ -60,8 +60,10 @@ install-stamp: build-stamp
 	dh_installinit $(dhbuildpackages) -u defaults 30
 	dh_installman  $(dhbuildpackages)
 	dh_install $(dhbuildpackages)
-	chmod 640 debian/nsca/etc/nsca.cfg debian/nsca/etc/send_nsca.cfg
-	chmod 640 debian/nsca-client/etc/send_nsca.cfg || true
+	for p in ${buildpackages}; do \
+		chmod 640 debian/$$p/etc/send_nsca.cfg; \
+	done
+	chmod 640 debian/nsca/etc/nsca.cfg
 	touch install-stamp
 
 binary: binary-indep binary-arch

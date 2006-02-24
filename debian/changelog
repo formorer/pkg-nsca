@@ -5,6 +5,9 @@ nsca (2.5-1.1) UNRELEASED; urgency=low
   [sean finney]
   * (INCOMPLETE) Add debconf logic for whether nsca service should
     be installed at boot time.
+  * (INCOMPLETE) initial work at chrooting support.  there are some
+    system calls that still need to be moved before the chroot()'ing
+    code, and there are some problems with syslog()'ing too.
 
   [marc haber]
   * remove install calls from debian/rules, use dh_install to ease
