@@ -5,10 +5,10 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad --exclude=CVS --exclude=.svn ./sample-config/nsca.cfg.in /home/sean/tmp/dpep-work.UkPN7v/nsca-2.5/sample-config/nsca.cfg.in
---- ./sample-config/nsca.cfg.in	2006-03-11 17:55:13.000000000 +0100
-+++ /home/sean/tmp/dpep-work.UkPN7v/nsca-2.5/sample-config/nsca.cfg.in	2006-03-11 17:55:13.000000000 +0100
-@@ -42,13 +42,22 @@
+diff -urNad --exclude=CVS --exclude=.svn ./sample-config/nsca.cfg.in /home/sean/tmp/dpep-work.v8Tmq4/nsca-2.5/sample-config/nsca.cfg.in
+--- ./sample-config/nsca.cfg.in	2006-03-12 11:40:20.000000000 +0100
++++ /home/sean/tmp/dpep-work.v8Tmq4/nsca-2.5/sample-config/nsca.cfg.in	2006-03-12 11:40:20.000000000 +0100
+@@ -42,6 +42,16 @@
  
  nsca_group=@nsca_grp@
  
@@ -25,23 +25,16 @@ diff -urNad --exclude=CVS --exclude=.svn ./sample-config/nsca.cfg.in /home/sean/
  
  
  # DEBUGGING OPTION
- # This option determines whether or not debugging
- # messages are logged to the syslog facility. 
- # Values: 0 = debugging off, 1 = debugging on
--
- debug=0
- 
- 
-diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.UkPN7v/nsca-2.5/src/nsca.c
---- ./src/nsca.c	2006-03-11 17:55:13.000000000 +0100
-+++ /home/sean/tmp/dpep-work.UkPN7v/nsca-2.5/src/nsca.c	2006-03-11 17:55:32.000000000 +0100
+diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.v8Tmq4/nsca-2.5/src/nsca.c
+--- ./src/nsca.c	2006-03-12 11:40:20.000000000 +0100
++++ /home/sean/tmp/dpep-work.v8Tmq4/nsca-2.5/src/nsca.c	2006-03-12 11:41:50.000000000 +0100
 @@ -40,8 +40,11 @@
  static int open_command_file(void);
  static void close_command_file(void);
  static void install_child_handler(void);
 -static int drop_privileges(char *,char *);
-+static int get_user_info(const char *user, uid_t *uid);
-+static int get_group_info(const char *group, gid_t *gid);
++static int get_user_info(const char *, uid_t *);
++static int get_group_info(const char *, gid_t *);
 +static int drop_privileges(const char *,uid_t,gid_t);
  static int write_check_result(char *,char *,int,char *,time_t);
 +static void do_chroot(void);
@@ -61,8 +54,8 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
  int main(int argc, char **argv){
          char buffer[MAX_INPUT_BUFFER];
          int result;
-+		uid_t uid=-1;
-+		gid_t gid=-1;
++        uid_t uid=-1;
++        gid_t gid=-1;
  
  
  	/* process command-line arguments */
@@ -75,12 +68,7 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
  
  	/* make sure the config file uses an absolute path */
  	if(config_file[0]!='/'){
-@@ -175,11 +182,13 @@
-         /* generate the CRC 32 table */
-         generate_crc32_table();
- 
--
- 	/* how should we handle client connections? */
+@@ -180,6 +187,9 @@
          switch(mode){
  
          case INETD:
@@ -90,7 +78,7 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
                  /* if we're running under inetd, handle one connection and get out */
                  handle_connection(0,NULL);
                  break;
-@@ -209,8 +218,15 @@
+@@ -209,8 +219,15 @@
  			open("/dev/null",O_WRONLY);
  			open("/dev/null",O_WRONLY);
  
@@ -107,7 +95,7 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
  
                          /* wait for connections */
                          wait_for_connections();
-@@ -411,6 +427,9 @@
+@@ -411,6 +428,9 @@
                  else if(!strcmp(varname,"nsca_group"))
  			nsca_group=strdup(varvalue);
  
@@ -117,7 +105,7 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
  		else{
                          syslog(LOG_ERR,"Unknown option specified in config file '%s' - Line %d\n",filename,line);
  
-@@ -1144,62 +1163,71 @@
+@@ -1144,62 +1164,71 @@
  	return OK;
          }
  
@@ -135,13 +123,10 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
 +				syslog(LOG_ERR,"Warning: Could not get passwd entry for '%s'",user);
 +			endpwent();
 +		}
-+
+ 
 +		/* else we were passed the UID */
 +		else
 +			*uid=(uid_t)atoi(user);
- 
-+	} else
-+		*uid=geteuid();
  
 -/* drops privileges */
 -static int drop_privileges(char *user, char *group){
@@ -149,10 +134,13 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
 -	gid_t gid=-1;
 -	struct group *grp;
 -	struct passwd *pw;
-+	return OK;
-+}
++	} else
++		*uid=geteuid();
  
 -	/* set effective group ID */
++	return OK;
++}
++
 +
 +/* get group information */
 +static int get_group_info(const char *group, gid_t *gid){
@@ -224,7 +212,7 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
  			/* initialize supplementary groups */
  			if(initgroups(user,gid)==-1){
  				if(errno==EPERM)
-@@ -1207,14 +1235,34 @@
+@@ -1207,14 +1236,34 @@
  				else{
  					syslog(LOG_ERR,"Warning: Possibly root user failed dropping privileges with initgroups()");
  					return ERROR;
@@ -237,9 +225,8 @@ diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.U
  #endif
  
  		if(setuid(uid)==-1)
--			syslog(LOG_ERR,"Warning: Could not set effective UID=%d",(int)uid);
+ 			syslog(LOG_ERR,"Warning: Could not set effective UID=%d",(int)uid);
 -	        }
-+			syslog(LOG_ERR,"Error: Could not set effective UID=%d",(int)uid);
  
 -	return OK;
 -        }
