@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+if [ -x "/etc/init.d/nsca" ]; then
+	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+		invoke-rc.d nsca stop || exit 0
+	else
+		/etc/init.d/nsca stop || exit 0
+	fi
+fi
+
+#DEBHELPER#

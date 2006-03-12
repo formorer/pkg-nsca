@@ -57,7 +57,7 @@ install-stamp: build-stamp
 	dh_installchangelogs $(dhbuildpackages) Changelog
 	dh_installdocs $(dhbuildpackages) README
 	dh_installexamples $(dhbuildpackages)
-	dh_installinit $(dhbuildpackages) -u defaults 30
+	dh_installinit $(dhbuildpackages) -n -u defaults 30
 	dh_installman  $(dhbuildpackages)
 	dh_install $(dhbuildpackages)
 	for p in ${buildpackages}; do \

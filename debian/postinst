@@ -1,17 +1,45 @@
 #! /bin/sh
 
+. /usr/share/debconf/confmodule
+
 pkg=nsca
 
 case "$1" in
-	configure)
-		;;
-	abort-upgrade|abort-remove|abort-deconfigure)
-		exit 0
-		;;
-	*)
-		echo "postinst called with unknown argument"
-		exit 1
-		;;
+configure)
+	db_get nsca/run-nsca-daemon
+	runnsca="$RET"
+	;;
+abort-upgrade|abort-remove|abort-deconfigure)
+	exit 0
+	;;
+*)
+	echo "postinst called with unknown argument"
+	exit 1
+	;;
 esac
+
+# do this manually to allow the debconf setting to control it:
+# (don't worry, the debconf setting respects the local modifications)
+if [ -x "/etc/init.d/nsca" ]; then
+	# if runnsca is set to either true/false, that means the user
+	# has just provided an answer (we unset it after every run).  in
+	# any case that means we have to remove runlevel links first
+	if [ -n "$runnsca" ]; then
+		update-rc.d -f nsca remove >/dev/null 2>&1
+	fi
+
+	if [ "$runnsca" = "false" ]; then
+		update-rc.d nsca stop 16 2 3 4 5 .
+	else 
+		update-rc.d nsca defaults >/dev/null
+		if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+			invoke-rc.d nsca start || exit 0
+		else
+			/etc/init.d/nsca start || exit 0
+		fi
+	fi
+fi
+
+db_reset nsca/run-nsca-daemon
 
 #DEBHELPER#

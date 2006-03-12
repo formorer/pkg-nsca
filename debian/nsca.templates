@@ -8,4 +8,6 @@ _Description: Should the nsca daemon be enabled by default?
  If the system on which you are installing nsca also runs the nagios
  daemon, you should most likely choose this option.  If you are installing
  nsca on a remote "satellite" system for the purpose of sending service
- checks to a central nagios host, you should not choose this option.
+ checks to a central nagios host, you should not choose this option.  If
+ you wish to run nsca as a service through inetd/xinetd, you should
+ also not choose this option.

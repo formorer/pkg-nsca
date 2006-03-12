@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-22 12:40+0100\n"
+"POT-Creation-Date: 2006-03-11 18:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,13 +26,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../nsca.templates:4
+#: ../nsca.templates:3
 msgid "Should the nsca daemon be enabled by default?"
 msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../nsca.templates:4
+#: ../nsca.templates:3
 msgid ""
 "The nsca daemon is the process that handles results service checks sent via "
 "send_nsca on remote hosts.  Typically the nsca daemon is only needed on "
@@ -41,10 +41,12 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../nsca.templates:4
+#: ../nsca.templates:3
 msgid ""
 "If the system on which you are installing nsca also runs the nagios daemon, "
 "you should most likely choose this option.  If you are installing nsca on a "
 "remote \"satellite\" system for the purpose of sending service checks to a "
-"central nagios host, you should not choose this option."
+"central nagios host, you should not choose this option.  If you wish to run "
+"nsca as a service through inetd/xinetd, you should also not choose this "
+"option."
 msgstr ""

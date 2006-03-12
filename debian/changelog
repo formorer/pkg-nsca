@@ -3,11 +3,14 @@ nsca (2.5-1.1) UNRELEASED; urgency=low
   * NOT RELEASED YET
 
   [sean finney]
-  * (INCOMPLETE) Add debconf logic for whether nsca service should
-    be installed at boot time.
-  * (INCOMPLETE) initial work at chrooting support.  there are some
-    system calls that still need to be moved before the chroot()'ing
-    code, and there are some problems with syslog()'ing too.
+  * add debconf support for whether nsca service should
+    be installed at boot time.  if nagios/nagios2 is installed
+    the default behaviour is to start/stop the daemon.  otherwise,
+    the default is to not activate it.  this should make a single nsca
+    package useful for both "central server" and "satellite"
+    installations, as well as making it easier for admins to run
+    it out of inetd configurations as well.
+  * nsca now supports chrooting when run in daemon mode.  
 
   [marc haber]
   * remove install calls from debian/rules, use dh_install to ease

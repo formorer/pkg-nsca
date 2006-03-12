@@ -5,9 +5,9 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad nsca-2.5~/sample-config/nsca.cfg.in nsca-2.5/sample-config/nsca.cfg.in
---- nsca-2.5~/sample-config/nsca.cfg.in	2006-02-24 19:26:49.000000000 +0100
-+++ nsca-2.5/sample-config/nsca.cfg.in	2006-02-24 19:26:49.000000000 +0100
+diff -urNad --exclude=CVS --exclude=.svn ./sample-config/nsca.cfg.in /home/sean/tmp/dpep-work.UkPN7v/nsca-2.5/sample-config/nsca.cfg.in
+--- ./sample-config/nsca.cfg.in	2006-03-11 17:55:13.000000000 +0100
++++ /home/sean/tmp/dpep-work.UkPN7v/nsca-2.5/sample-config/nsca.cfg.in	2006-03-11 17:55:13.000000000 +0100
 @@ -42,13 +42,22 @@
  
  nsca_group=@nsca_grp@
@@ -21,7 +21,7 @@ diff -urNad nsca-2.5~/sample-config/nsca.cfg.in nsca-2.5/sample-config/nsca.cfg.
 +# NOTE: if you specify this option, the command file will be opened
 +#       relative to this directory.
 +
-+#nsca_chroot=@nsca_chroot@
++#nsca_chroot=/var/run/nagios/rw
  
  
  # DEBUGGING OPTION
@@ -32,10 +32,23 @@ diff -urNad nsca-2.5~/sample-config/nsca.cfg.in nsca-2.5/sample-config/nsca.cfg.
  debug=0
  
  
-diff -urNad nsca-2.5~/src/nsca.c nsca-2.5/src/nsca.c
---- nsca-2.5~/src/nsca.c	2006-02-24 19:26:49.000000000 +0100
-+++ nsca-2.5/src/nsca.c	2006-02-24 19:27:45.000000000 +0100
-@@ -54,6 +54,8 @@
+diff -urNad --exclude=CVS --exclude=.svn ./src/nsca.c /home/sean/tmp/dpep-work.UkPN7v/nsca-2.5/src/nsca.c
+--- ./src/nsca.c	2006-03-11 17:55:13.000000000 +0100
++++ /home/sean/tmp/dpep-work.UkPN7v/nsca-2.5/src/nsca.c	2006-03-11 17:55:32.000000000 +0100
+@@ -40,8 +40,11 @@
+ static int open_command_file(void);
+ static void close_command_file(void);
+ static void install_child_handler(void);
+-static int drop_privileges(char *,char *);
++static int get_user_info(const char *user, uid_t *uid);
++static int get_group_info(const char *group, gid_t *gid);
++static int drop_privileges(const char *,uid_t,gid_t);
+ static int write_check_result(char *,char *,int,char *,time_t);
++static void do_chroot(void);
+ static void do_exit(int);
+ 
+ static enum { OPTIONS_ERROR, SINGLE_PROCESS_DAEMON, MULTI_PROCESS_DAEMON, INETD } mode=SINGLE_PROCESS_DAEMON;
+@@ -54,6 +57,8 @@
  char *nsca_user=NULL;
  char *nsca_group=NULL;
  
@@ -44,7 +57,16 @@ diff -urNad nsca-2.5~/src/nsca.c nsca-2.5/src/nsca.c
  int show_help=FALSE;
  int show_license=FALSE;
  int show_version=FALSE;
-@@ -143,7 +145,7 @@
+@@ -88,6 +93,8 @@
+ int main(int argc, char **argv){
+         char buffer[MAX_INPUT_BUFFER];
+         int result;
++		uid_t uid=-1;
++		gid_t gid=-1;
+ 
+ 
+ 	/* process command-line arguments */
+@@ -143,7 +150,7 @@
  
  
          /* open a connection to the syslog facility */
@@ -53,25 +75,39 @@ diff -urNad nsca-2.5~/src/nsca.c nsca-2.5/src/nsca.c
  
  	/* make sure the config file uses an absolute path */
  	if(config_file[0]!='/'){
-@@ -175,6 +177,17 @@
+@@ -175,11 +182,13 @@
          /* generate the CRC 32 table */
          generate_crc32_table();
  
-+	/* chroot if configured to do so */
-+	if(nsca_chroot != NULL){
-+		if(chdir(nsca_chroot)){
-+			syslog(LOG_ERR, "can not chdir into chroot directory.");
-+			do_exit(STATE_UNKNOWN);
-+		}
-+		if(chroot(".")){
-+			syslog(LOG_ERR, "can not perform chroot operation.");
-+			do_exit(STATE_UNKNOWN);
-+		}
-+	}
- 
+-
  	/* how should we handle client connections? */
          switch(mode){
-@@ -411,6 +424,9 @@
+ 
+         case INETD:
++				/* chroot if configured */
++				do_chroot();
++
+                 /* if we're running under inetd, handle one connection and get out */
+                 handle_connection(0,NULL);
+                 break;
+@@ -209,8 +218,15 @@
+ 			open("/dev/null",O_WRONLY);
+ 			open("/dev/null",O_WRONLY);
+ 
++			/* get group information before chrooting */
++			get_user_info(nsca_user, &uid);
++			get_group_info(nsca_group, &gid);
++
++			/* chroot if configured */
++			do_chroot();
++
+ 			/* drop privileges */
+-			drop_privileges(nsca_user,nsca_group);
++			drop_privileges(nsca_user,uid,gid);
+ 
+                         /* wait for connections */
+                         wait_for_connections();
+@@ -411,6 +427,9 @@
                  else if(!strcmp(varname,"nsca_group"))
  			nsca_group=strdup(varvalue);
  
@@ -81,3 +117,152 @@ diff -urNad nsca-2.5~/src/nsca.c nsca-2.5/src/nsca.c
  		else{
                          syslog(LOG_ERR,"Unknown option specified in config file '%s' - Line %d\n",filename,line);
  
+@@ -1144,62 +1163,71 @@
+ 	return OK;
+         }
+ 
++/* get user information */
++static int get_user_info(const char *user, uid_t *uid){
++	const struct passwd *pw=NULL;
++	
++	if(user!=NULL){
++		/* see if this is a user name */
++		if(strspn(user,"0123456789")<strlen(user)){
++			pw=(struct passwd *)getpwnam(user);
++			if(pw!=NULL)
++				*uid=(uid_t)(pw->pw_uid);
++			else
++				syslog(LOG_ERR,"Warning: Could not get passwd entry for '%s'",user);
++			endpwent();
++		}
++
++		/* else we were passed the UID */
++		else
++			*uid=(uid_t)atoi(user);
+ 
++	} else
++		*uid=geteuid();
+ 
+-/* drops privileges */
+-static int drop_privileges(char *user, char *group){
+-	uid_t uid=-1;
+-	gid_t gid=-1;
+-	struct group *grp;
+-	struct passwd *pw;
++	return OK;
++}
+ 
+-	/* set effective group ID */
++
++/* get group information */
++static int get_group_info(const char *group, gid_t *gid){
++	const struct group *grp=NULL;
++	
++	/* get group ID */
+ 	if(group!=NULL){
+-		
+ 		/* see if this is a group name */
+ 		if(strspn(group,"0123456789")<strlen(group)){
+ 			grp=(struct group *)getgrnam(group);
+ 			if(grp!=NULL)
+-				gid=(gid_t)(grp->gr_gid);
++				*gid=(gid_t)(grp->gr_gid);
+ 			else
+ 				syslog(LOG_ERR,"Warning: Could not get group entry for '%s'",group);
+ 			endgrent();
+-		        }
++		}
+ 
+ 		/* else we were passed the GID */
+ 		else
+-			gid=(gid_t)atoi(group);
++			*gid=(gid_t)atoi(group);
++	} else
++		*gid=getegid();
+ 
+-		/* set effective group ID if other than current EGID */
+-		if(gid!=getegid()){
++	return OK;
++}
+ 
+-			if(setgid(gid)==-1)
+-				syslog(LOG_ERR,"Warning: Could not set effective GID=%d",(int)gid);
+-		        }
+-	        }
+ 
++/* drops privileges */
++static int drop_privileges(const char *user, uid_t uid, gid_t gid){
++	struct group *grp;
++	struct passwd *pw;
+ 
+-	/* set effective user ID */
+-	if(user!=NULL){
+-		
+-		/* see if this is a user name */
+-		if(strspn(user,"0123456789")<strlen(user)){
+-			pw=(struct passwd *)getpwnam(user);
+-			if(pw!=NULL)
+-				uid=(uid_t)(pw->pw_uid);
+-			else
+-				syslog(LOG_ERR,"Warning: Could not get passwd entry for '%s'",user);
+-			endpwent();
+-		        }
++	/* set effective group ID if other than current EGID */
++	if(gid!=getegid()){
++		if(setgid(gid)==-1)
++			syslog(LOG_ERR,"Warning: Could not set effective GID=%d",(int)gid);
++	}
+ 
+-		/* else we were passed the UID */
+-		else
+-			uid=(uid_t)atoi(user);
+-			
+ #ifdef HAVE_INITGROUPS
+-
+ 		if(uid!=geteuid()){
+-
+ 			/* initialize supplementary groups */
+ 			if(initgroups(user,gid)==-1){
+ 				if(errno==EPERM)
+@@ -1207,14 +1235,34 @@
+ 				else{
+ 					syslog(LOG_ERR,"Warning: Possibly root user failed dropping privileges with initgroups()");
+ 					return ERROR;
+-			                }
+-	                        }
+-		        }
++				}
++			}
++		}
+ #endif
+ 
+ 		if(setuid(uid)==-1)
+-			syslog(LOG_ERR,"Warning: Could not set effective UID=%d",(int)uid);
+-	        }
++			syslog(LOG_ERR,"Error: Could not set effective UID=%d",(int)uid);
+ 
+-	return OK;
+-        }
++		return OK;
++}
++
++/* perform the chroot() operation if configured to do so */
++void do_chroot(void){
++	int retval=0;
++	const char *err=NULL;
++
++	if(nsca_chroot != NULL){
++		retval=chdir(nsca_chroot);
++		if(retval!=0){
++			err=strerror(errno);
++			syslog(LOG_ERR, "can not chdir into chroot directory: %s", err);
++			do_exit(STATE_UNKNOWN);
++		}
++		retval=chroot(".");
++		if(retval!=0){
++			err=strerror(errno);
++			syslog(LOG_ERR, "can not chroot: %s", err);
++			do_exit(STATE_UNKNOWN);
++		}
++	}
++}
