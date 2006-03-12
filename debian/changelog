@@ -9,8 +9,8 @@ nsca (2.5-1.1) UNRELEASED; urgency=low
     the default is to not activate it.  this should make a single nsca
     package useful for both "central server" and "satellite"
     installations, as well as making it easier for admins to run
-    it out of inetd configurations as well.
-  * nsca now supports chrooting when run in daemon mode.  
+    it out of inetd configurations as well (closes: #281828, #353901).
+  * nsca now supports chrooting when run in daemon mode (closes: #353272).  
 
   [marc haber]
   * remove install calls from debian/rules, use dh_install to ease
