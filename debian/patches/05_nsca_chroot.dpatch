@@ -1,8 +1,7 @@
 #! /bin/sh /usr/share/dpatch/dpatch-run
 ## 05_nsca_chroot.dpatch by  <seanius@debian.org>
 ##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: No description.
+## DP: provide support for chrooting when in daemon mode.
 
 @DPATCH@
 diff -urNad --exclude=CVS --exclude=.svn ./sample-config/nsca.cfg.in /home/sean/tmp/dpep-work.v8Tmq4/nsca-2.5/sample-config/nsca.cfg.in
