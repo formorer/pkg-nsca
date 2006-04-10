@@ -10,7 +10,9 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 endif
 
 # Should we build nsca-client
+ifndef buildclientpackage
 buildclientpackage=no
+endif
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
@@ -29,7 +31,7 @@ else
 buildpackages=nsca
 endif
 
-# generate -pexim4-base -peximon4 ... commandline for debhelper
+# generate -pnsca -pnsca-client ... commandline for debhelper
 dhbuildpackages=$(addprefix -p,$(buildpackages))
 
 build: build-stamp

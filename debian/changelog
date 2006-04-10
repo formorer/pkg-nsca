@@ -1,8 +1,9 @@
 nsca (2.5-3) UNRELEASED; urgency=low
 
   * NOT RELEASED YET
+  * allow buildclientpackage to be set from the build environment
 
- -- sean finney <seanius@debian.org>  Fri, 31 Mar 2006 07:30:09 +0200
+ -- Marc Haber <mh+debian-packages@zugschlus.de>  Mon, 10 Apr 2006 10:52:38 +0200
 
 nsca (2.5-2) unstable; urgency=low
 
