@@ -7,7 +7,7 @@ pkg=nsca
 case "$1" in
 configure)
 	db_get nsca/run-nsca-daemon
-	runnsca="$RET"
+	new_runnsca="$RET"
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
 	exit 0
@@ -18,28 +18,65 @@ abort-upgrade|abort-remove|abort-deconfigure)
 	;;
 esac
 
+# if nsca's init script is already configured, we must reflect 
+# that as the source of configuration, not debconf itself.
+# this function figures that out.  note this is slightly
+# different from the run_nsca in config, as state 105 is
+# treated differently at this point (since we know the files
+# are unpacked at this point)
+run_nsca(){
+	set +e
+	invoke-rc.d --query nsca start 2>/dev/null
+	invoke_said=$?
+	set -e
+	
+	case $invoke_said in
+	# 101 == disabled
+	101)
+		echo "false"
+	;;
+	# 104 == enabled
+	104)
+		echo "true"
+	;;
+	# 105 == we don't know
+	105)
+		echo "unknown"
+	;;
+	# anything else is "undefined", so we then use our defaults
+	*)
+		if which nagios >/dev/null 2>&2 || which nagios2 >/dev/null; then
+			echo "true"
+		else
+			echo "false"
+		fi
+	;;
+	esac
+}
+
 # do this manually to allow the debconf setting to control it:
 # (don't worry, the debconf setting respects the local modifications)
 if [ -x "/etc/init.d/nsca" ]; then
-	# if runnsca is set to either true/false, that means the user
-	# has just provided an answer (we unset it after every run).  in
-	# any case that means we have to remove runlevel links first
-	if [ -n "$runnsca" ]; then
+	old_runnsca=`run_nsca`
+	# if anything has changed...
+	if [ "$new_runnsca" != "$old_runnsca" ]; then
 		update-rc.d -f nsca remove >/dev/null 2>&1
+		if [ "$new_runnsca" = "false" ]; then
+			update-rc.d nsca stop 16 2 3 4 5 .
+		else 
+			update-rc.d nsca defaults >/dev/null
+		fi
 	fi
 
-	if [ "$runnsca" = "false" ]; then
-		update-rc.d nsca stop 16 2 3 4 5 .
-	else 
-		update-rc.d nsca defaults >/dev/null
-		if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
-			invoke-rc.d nsca start || exit 0
-		else
-			/etc/init.d/nsca start || exit 0
-		fi
+	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+		invoke-rc.d nsca start || exit 0
+	else
+		/etc/init.d/nsca start || exit 0
 	fi
 fi
 
+# always reset this question, to make sure we're not depending on it
 db_reset nsca/run-nsca-daemon
+db_stop
 
 #DEBHELPER#

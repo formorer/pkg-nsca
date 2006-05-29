@@ -1,0 +1,58 @@
+# Translators, if you are not familiar with the PO format, gettext
+# documentation is worth reading, especially sections dedicated to
+# this format, e.g. by running:
+# info -n '(gettext)PO Files'
+# info -n '(gettext)Header Entry'
+# Some information specific to po-debconf are available at
+# /usr/share/doc/po-debconf/README-trans
+# or http://www.debian.org/intl/l10n/po-debconf/README-trans
+# Developers do not need to manually edit POT or PO files.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: nsca 2.5-2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-03-11 18:47+0100\n"
+"PO-Revision-Date: 2006-04-10 12:40+0200\n"
+"Last-Translator: Sylvain Archenault <sylvain.archenault@laposte.net>\n"
+"Language-Team: French <debian-l10n-french@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:3
+msgid "Should the nsca daemon be enabled by default?"
+msgstr "Faut-il que le démon nsca soit activé par défaut ?"
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:3
+msgid ""
+"The nsca daemon is the process that handles results service checks sent via "
+"send_nsca on remote hosts.  Typically the nsca daemon is only needed on "
+"hosts that run the nagios daemon."
+msgstr ""
+"Le démon nsca est le processus qui traite les résultats des requêtes de "
+"contrôle de service envoyées via « send_nsca » vers des hôtes distants. Le "
+"démon nsca est nécessaire essentiellement sur les machines qui hébergent un "
+"démon nagios."
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:3
+msgid ""
+"If the system on which you are installing nsca also runs the nagios daemon, "
+"you should most likely choose this option.  If you are installing nsca on a "
+"remote \"satellite\" system for the purpose of sending service checks to a "
+"central nagios host, you should not choose this option.  If you wish to run "
+"nsca as a service through inetd/xinetd, you should also not choose this "
+"option."
+msgstr ""
+"Si le système sur lequel vous installez nsca exécute également le démon "
+"nagios, vous devriez choisir cette option. Ne la choisissez pas si vous "
+"installez nsca sur un « satellite » distant dans le but de tester les "
+"services d'un hôte nagios. Si vous souhaitez exécuter nsca via inetd ou "
+"xinetd, ne choisissez pas cette option."

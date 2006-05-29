@@ -1,9 +1,20 @@
-nsca (2.5-3) UNRELEASED; urgency=low
+nsca (2.6-1) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * New upstream release
+
+  [sean finney]
+  * new french debconf translations from Sylvain Archenault (closes: #362712).
+  * upstream has incorporated our chroot support patch, so
+    05_nsca_chroot.dpatch is no longer necessary.
+  * includes fix for segfault in encryption library cleanup (closes: #357275).
+  * initscript modifications to relfect that nsca now supports a pid_file
+    directive and reloading of configuration via HUP natively.
+  * maintscript cleanup for config<->debconf starting/stopping nsca stuff.
+
+  [marc haber]
   * allow buildclientpackage to be set from the build environment
 
- -- Marc Haber <mh+debian-packages@zugschlus.de>  Mon, 10 Apr 2006 10:52:38 +0200
+ -- sean finney <seanius@debian.org>  Mon, 29 May 2006 11:28:38 +0200
 
 nsca (2.5-2) unstable; urgency=low
 

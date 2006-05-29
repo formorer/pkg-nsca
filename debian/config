@@ -6,28 +6,33 @@ if [ ! "$1" = "configure" ] && [ ! "$1" = "reconfigure" ]; then exit 0; fi
 
 # if nsca's init script is already configured, we must reflect 
 # that as the source of configuration, not debconf itself.
-set +e
-invoke-rc.d --query nsca start
-invoke_said=$?
-set -e
+# this function figures that out.
+run_nsca(){
+	set +e
+	invoke-rc.d --query nsca start 2>/dev/null
+	invoke_said=$?
+	set -e
+	
+	case $invoke_said in
+	# 101 == disabled
+	101)
+		echo "false"
+	;;
+	# 104 == enabled
+	104)
+		echo "true"
+	;;
+	# anything else is "undefined", so we then use our defaults
+	*)
+		if which nagios >/dev/null 2>&2 || which nagios2 >/dev/null; then
+			echo "true"
+		else
+			echo "false"
+		fi
+	;;
+	esac
+}
 
-case $invoke_said in
-# 101 == disabled, 104 == enabled.  do nothing for either
-101|104)
-;;
-*)
-	if which nagios >/dev/null 2>&2 || which nagios2 >/dev/null; then
-		default_run_nsca_daemon="true"
-	else
-		default_run_nsca_daemon="false"
-	fi
-;;
-esac
-
-db_fget nsca/run-nsca-daemon seen
-seen="$RET"
-if [ "$seen" = "false" ]; then
-	db_set nsca/run-nsca-daemon "$default_run_nsca_daemon"
-fi
+db_set nsca/run-nsca-daemon `run_nsca`
 db_input medium nsca/run-nsca-daemon || true
 db_go || true
