@@ -1,3 +1,5 @@
 # the code in question is wrapped inside a "if which update-inetd" and
 # is only there for backwards compatibility at that...
 nsca binary: maintainer-script-needs-depends-on-netbase postrm
+# this is because we provide enabling/disabling of the init script
+nsca binary: duplicate-updaterc.d-calls-in-postinst nsca

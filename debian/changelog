@@ -4,6 +4,9 @@ nsca (2.6-2) unstable; urgency=low
   * include fix for format-string crashing, thanks to Ulf Harnhammar
     for the thorough description and clean patch. closes: #392010.
   * new Czech debconf translations, thanks to Martin Šín (closes: #382925).
+  * lintian fix: add debconf dependency.
+  * lintian ignore: multiple update-rc.d calls in postinst (resulting
+    from the script enabling/disabling code).
 
  -- sean finney <seanius@debian.org>  Mon, 09 Oct 2006 23:59:21 +0200
 
