@@ -2,3 +2,4 @@
 02_nsca_foreground.dpatch
 03_errors_to_stderr.dpatch
 04_nsca.cfg_nagios_vs_nagios.dpatch
+05_nsca_format_string.dpatch
