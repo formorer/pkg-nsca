@@ -2,8 +2,8 @@
 ##
 
 @DPATCH@
---- src/send_nsca.c.old	2006-04-06 23:19:30.000000000 +0200
-+++ src/send_nsca.c	2006-10-09 20:47:10.000000000 +0200
+--- sid/src/send_nsca.c.old	2006-04-06 23:19:30.000000000 +0200
++++ sid/src/send_nsca.c	2006-10-09 20:47:10.000000000 +0200
 @@ -421,7 +421,7 @@ int process_arguments(int argc, char **a
  		/* config file */
  		else if(!strcmp(argv[x-1],"-c")){
