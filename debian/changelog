@@ -1,8 +1,10 @@
 nsca (2.6-3) UNRELEASED; urgency=low
 
-  * NOT RELEASED YET
+  [sean finney]
+  * update the location of the nagios2 command file.  thanks to
+    Heiko Schlittermann for finding this (closes: #396343).
 
- -- sean finney <sean@numanuma.seanius.net>  Tue, 10 Oct 2006 00:27:31 +0200
+ -- sean finney <seanius@debian.org>  Tue, 31 Oct 2006 22:26:58 +0100
 
 nsca (2.6-2) unstable; urgency=low
 

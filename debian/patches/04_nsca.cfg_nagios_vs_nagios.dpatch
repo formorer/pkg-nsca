@@ -19,7 +19,7 @@ diff -urNad nsca-2.5~/sample-config/nsca.cfg.in nsca-2.5/sample-config/nsca.cfg.
 +# default location for nagios 1.x:
 +command_file=/var/run/nagios/nagios.cmd
 +# and this is the default location for nagios2:
-+#command_file=/var/run/nagios2/rw/nagios.cmd
++#command_file=/var/lib/nagios2/rw/nagios.cmd
  
  
  # ALTERNATE DUMP FILE
