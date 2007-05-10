@@ -1,0 +1,52 @@
+# Translation of nsca debconf templates to German
+# Copyright (C) Helge Kreutzmann <debian@helgefjell.de>, 2007.
+# This file is distributed under the same license as the nsca package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nsca 2.6-3\n"
+"Report-Msgid-Bugs-To: pkg-nagios-devel@lists.alioth.debian.org\n"
+"POT-Creation-Date: 2006-11-01 19:55+0100\n"
+"PO-Revision-Date: 2007-03-10 18:06+0100\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:1001
+msgid "Should the nsca daemon be enabled by default?"
+msgstr "Soll der Nsca-Daemon standardmäßig aktiviert werden?"
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:1001
+msgid ""
+"The nsca daemon is the process that handles results service checks sent via "
+"send_nsca on remote hosts.  Typically the nsca daemon is only needed on "
+"hosts that run the nagios daemon."
+msgstr ""
+"Der Nsca-Daemon ist der Prozess, der die Ergebnisse der Dienste-"
+"Überprüfungen, die über send_nsca auf den entfernten Rechnern versandt "
+"wurden, verarbeitet. Typischerweise wird der Nsca-Daemon nur auf Rechnern "
+"benötigt, auf denen der Nagios-Daemon läuft."
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:1001
+msgid ""
+"If the system on which you are installing nsca also runs the nagios daemon, "
+"you should most likely choose this option.  If you are installing nsca on a "
+"remote \"satellite\" system for the purpose of sending service checks to a "
+"central nagios host, you should not choose this option.  If you wish to run "
+"nsca as a service through inetd/xinetd, you should also not choose this "
+"option."
+msgstr ""
+"Falls auf dem System, auf dem Sie Nsca installieren, auch der Nagios-Daemon "
+"läuft, sollten Sie höchstwahrscheinlich diese Option wählen. Falls Sie Nsca "
+"auf einem entfernten »Satelliten«-System zum Zweck des Versands von "
+"Diensteprüfungen an einen zentralen Nagios-Rechner installieren, sollten Sie "
+"diese Option nicht wählen. Falls Sie Nsca als Dienst über Inetd/Xinetd "
+"betreiben möchten, sollten Sie diese Option auch nicht wählen."
