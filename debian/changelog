@@ -4,10 +4,12 @@ nsca (2.6-4) UNRELEASED; urgency=low
   * new German debconf translations, from Helge Kreutzmann (closes: #414590).
 
   [ Alexander Wirt ]
-  * Don't fail if nsca is already started or stopped 
+  * Don't fail if nsca is already started or stopped (Closes: #496810)
   * Add myself to uploaders
+  * Add LSB dependency info to initscript (Closes: #466261) 
+  * Update postinst to nagios3 (Closes: #495034)
 
- -- Alexander Wirt <formorer@debian.org>  Fri, 12 Sep 2008 08:25:29 +0200
+ -- Alexander Wirt <formorer@debian.org>  Fri, 12 Sep 2008 08:28:29 +0200
 
 nsca (2.6-3) unstable; urgency=low
 
