@@ -19,14 +19,15 @@ Description: Nagios service monitor agent
  .
  Nagios' features include:
  .
- o  Monitoring of network services (via TCP port, SMTP, POP3, HTTP, NNTP,
-      PING, etc.)
- o  Plugin interface to allow for user-developed service checks
- o  Contact notifications when problems occur and get resolved (via email,
-      pager, or user-defined method)
- o  Ability to define event handlers to be run during service or host events
-      (for proactive problem resolution)
- o  Web output (current status, notifications, problem history, log file, etc.)
+  -  Monitoring of network services (via TCP port, SMTP, POP3, HTTP, NNTP,
+     PING, etc.)
+  -  Plugin interface to allow for user-developed service checks
+  -  Contact notifications when problems occur and get resolved (via email,
+     pager, or user-defined method)
+  -  Ability to define event handlers to be run during service or host events
+     (for proactive problem resolution)
+  -  Web output (current status, notifications, problem history, log file,
+     etc.)
  .
  Nagios was written in C and is designed to be easy to understand and modify
  to fit your own needs.
@@ -47,14 +48,15 @@ Description: Nagios service monitor agent - client package
  .
  Nagios' features include:
  .
- o  Monitoring of network services (via TCP port, SMTP, POP3, HTTP, NNTP,
-      PING, etc.)
- o  Plugin interface to allow for user-developed service checks
- o  Contact notifications when problems occur and get resolved (via email,
-      pager, or user-defined method)
- o  Ability to define event handlers to be run during service or host events
-      (for proactive problem resolution)
- o  Web output (current status, notifications, problem history, log file, etc.)
+  -  Monitoring of network services (via TCP port, SMTP, POP3, HTTP, NNTP,
+     PING, etc.)
+  -  Plugin interface to allow for user-developed service checks
+  -  Contact notifications when problems occur and get resolved (via email,
+     pager, or user-defined method)
+  -  Ability to define event handlers to be run during service or host events
+     (for proactive problem resolution)
+  -  Web output (current status, notifications, problem history, log file,
+     etc.)
  .
  Nagios was written in C and is designed to be easy to understand and modify
  to fit your own needs.

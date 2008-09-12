@@ -3,24 +3,24 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: nsca\n"
 "Report-Msgid-Bugs-To: pkg-nagios-devel@lists.alioth.debian.org\n"
 "POT-Creation-Date: 2006-11-01 19:55+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2007-10-19 20:24+0100\n"
+"Last-Translator: Bart Cornelis <cobaco@skolelinux.no>\n"
+"Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
 
 #. Type: boolean
 #. Description
 #: ../nsca.templates:1001
 msgid "Should the nsca daemon be enabled by default?"
-msgstr ""
+msgstr "Wilt u dat de nsca-achtergronddienst standaard geactiveerd wordt?"
 
 #. Type: boolean
 #. Description
@@ -30,6 +30,10 @@ msgid ""
 "send_nsca on remote hosts.  Typically the nsca daemon is only needed on "
 "hosts that run the nagios daemon."
 msgstr ""
+"De nsca-achtergronddienst is het proces dat de service-checks die via "
+"send_nsca op andere computers gestuurd worden afhandelt. Normaal is de nsca-"
+"achtergronddienst enkel nodig op computers waar de nagios-achtergronddienst "
+"draait. "
 
 #. Type: boolean
 #. Description
@@ -42,3 +46,9 @@ msgid ""
 "nsca as a service through inetd/xinetd, you should also not choose this "
 "option."
 msgstr ""
+"Als het systeem waarop u nsca installeert ook de nagios-achtergronddienst "
+"draait dient u waarschijnlijk voor deze optie te kiezen. Als u nsca aan het "
+"installeren bent op een 'satelliet'-systeem met de bedoeling om service-"
+"checks te versturen naar een centrale nagios-server dient u deze optie af te "
+"slaan. Ook als u nsca als een dienst wilt draaien via inetd/xinetd dient u "
+"deze optie af te slaan."

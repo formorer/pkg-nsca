@@ -6,13 +6,46 @@ nsca (2.6-4) UNRELEASED; urgency=low
   [ Alexander Wirt ]
   * Don't fail if nsca is already started or stopped (Closes: #496810)
   * Add myself to uploaders
-  * Add LSB dependency info to initscript (Closes: #466261) 
+  * Add LSB dependency info to initscript (Closes: #466261)
   * Update postinst to nagios3 (Closes: #495034)
   * Mention dpkg-reconfigure in README.debian
-  * Bump standards version 
   * Add po-debconf as build-dependency
+  * Integrate last nmus and acknowledge them (Closes: #484419, #432465,  #448119)
+    also Closes: #414590, #476814, #476878, #476918, #477985
 
  -- Alexander Wirt <formorer@debian.org>  Fri, 12 Sep 2008 08:28:29 +0200
+
+nsca (2.6-3.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix bashism in debian/rules (Closes: #484419)
+  * Bump Standards-Version to 3.8.0.
+
+ -- Chris Lamb <chris@chris-lamb.co.uk>  Fri, 11 Jul 2008 23:26:02 +0100
+
+nsca (2.6-3.1) unstable; urgency=low
+
+  * Non-maintainer upload to fix pending l10n issues.
+  * Reformat the package description to hard-format
+    the enumeration part. Closes: #432465
+  * Debconf translations:
+    - Portuguese. Closes: #435739
+    - Dutch. Closes: #448119
+    - German. Closes: #414590
+    - Galician. Closes: #476814
+    - Finnish. Closes: #476878
+    - Basque. Closes: #476918
+    - Russian. Closes: #477985
+  * [Lintian] Reformat NEWS.Debian to fit the changelog format
+  * [Lintian] Add copyright information to debian/copyright
+  * [Lintian] Drop init script start/stop from postinst, prerm as
+    this is added anyway by dh_installinit
+  * [Lintian] No longer hide init script failures in postinst
+  * [Lintian] No longer include empty usr/bin directory
+  * [Lintian] Add po-debconf to Build-Depends (use in the clean target)
+  * [Lintian] Properly format debian/NEWS trailer line
+
+ -- Christian Perrier <bubulle@debian.org>  Thu, 03 Apr 2008 07:53:58 +0200
 
 nsca (2.6-3) unstable; urgency=low
 

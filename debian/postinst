@@ -45,7 +45,7 @@ run_nsca(){
 	;;
 	# anything else is "undefined", so we then use our defaults
 	*)
-		if which nagios >/dev/null 2>&2 || which nagios3 >/dev/null; then
+		if which nagios >/dev/null 2>&2 || which nagios2 >/dev/null; then
 			echo "true"
 		else
 			echo "false"
@@ -69,9 +69,9 @@ if [ -x "/etc/init.d/nsca" ]; then
 	fi
 
 	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
-		invoke-rc.d nsca start || exit 0
+		invoke-rc.d nsca start
 	else
-		/etc/init.d/nsca start || exit 0
+		/etc/init.d/nsca start
 	fi
 fi
 

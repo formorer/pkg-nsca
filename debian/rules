@@ -47,7 +47,7 @@ clean: unpatch
 	if test -f Makefile; then $(MAKE) distclean; fi
 	dh_clean
 	debconf-updatepo
-	rm -f {build,install}-stamp
+	rm -f build-stamp install-stamp
 
 install: install-stamp
 install-stamp: build-stamp
