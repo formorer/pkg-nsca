@@ -1,8 +1,5 @@
 nsca (2.6-4) UNRELEASED; urgency=low
 
-  [ sean finney ]
-  * new German debconf translations, from Helge Kreutzmann (closes: #414590).
-
   [ Alexander Wirt ]
   * Don't fail if nsca is already started or stopped (Closes: #496810)
   * Add myself to uploaders
