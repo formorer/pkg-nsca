@@ -1,9 +1,13 @@
 nsca (2.6-4) UNRELEASED; urgency=low
 
-  [sean finney]
+  [ sean finney ]
   * new German debconf translations, from Helge Kreutzmann (closes: #414590).
 
- -- sean finney <seanius@debian.org>  Thu, 10 May 2007 16:53:46 +0200
+  [ Alexander Wirt ]
+  * Don't fail if nsca is already started or stopped 
+  * Add myself to uploaders
+
+ -- Alexander Wirt <formorer@debian.org>  Fri, 12 Sep 2008 08:25:29 +0200
 
 nsca (2.6-3) unstable; urgency=low
 
