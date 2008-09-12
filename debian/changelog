@@ -9,6 +9,8 @@ nsca (2.6-4) UNRELEASED; urgency=low
   * Add LSB dependency info to initscript (Closes: #466261) 
   * Update postinst to nagios3 (Closes: #495034)
   * Mention dpkg-reconfigure in README.debian
+  * Bump standards version 
+  * Add po-debconf as build-dependency
 
  -- Alexander Wirt <formorer@debian.org>  Fri, 12 Sep 2008 08:28:29 +0200
 
