@@ -10,8 +10,8 @@ nsca (2.6-4) UNRELEASED; urgency=low
   * Update postinst to nagios3 (Closes: #495034)
   * Mention dpkg-reconfigure in README.debian
   * Add po-debconf as build-dependency
-  * Integrate last nmus and acknowledge them (Closes: #484419, #432465,  #448119)
-    also Closes: #414590, #476814, #476878, #476918, #477985
+  * Integrate last nmus and acknowledge them (Closes: #484419, #432465)
+    also Closes: #448119, #414590, #476814, #476878, #476918, #477985
 
  -- Alexander Wirt <formorer@debian.org>  Fri, 12 Sep 2008 08:28:29 +0200
 
