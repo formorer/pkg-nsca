@@ -5,7 +5,7 @@ This is the debian package of nsca.  by default nsca works with an
 init script /etc/init.d/nsca, however, it can also be run from the
 various inetd implementations.
 
-If you want to launch nsca asa daemon from init you can call 
+If you want to launch nsca as a daemon from init you can call 
 "dpkg-reconfigure nsca" to get the startup links. 
 
 if you want nsca to work with inetd, you need to add the following
