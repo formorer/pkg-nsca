@@ -48,7 +48,7 @@ else
 	SSD_STOPOPTS="--pidfile $PIDFILE"
 fi
 
-SSD_START="/sbin/start-stop-daemon ­-oknodo -S $SSD_STARTOPTS --exec $DAEMON"
+SSD_START="/sbin/start-stop-daemon --oknodo -S $SSD_STARTOPTS --exec $DAEMON"
 SSD_STOP="/sbin/start-stop-daemon --oknodo -K $SSD_STOPOPTS --exec $DAEMON"
 
 die(){
