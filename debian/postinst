@@ -45,7 +45,7 @@ run_nsca(){
 	;;
 	# anything else is "undefined", so we then use our defaults
 	*)
-		if which nagios >/dev/null 2>&2 || which nagios2 >/dev/null; then
+		if which nagios >/dev/null 2>&1 || which nagios3 >/dev/null 2>&1 || which nagios2 >/dev/null 2>&1 ; then
 			echo "true"
 		else
 			echo "false"
