@@ -1,0 +1,3 @@
+version=2
+http://sf.net/nagios/nsca-([0-9.]+)\.tar\.gz
+
