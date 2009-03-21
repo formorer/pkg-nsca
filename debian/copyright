@@ -7,5 +7,5 @@ Upstream Author: Ethan Galstad <nagios@nagios.org>
 
 Copyright © 2000-2006 Ethan Galstad (nagios@nagios.org)
 
-Nsca is released under the terms of the GPL license.
-See /usr/share/common-licenses/GPL for the full license.
+Nsca is released under the terms of the GPL v2 license.
+See /usr/share/common-licenses/GPL-2 for the full license.
