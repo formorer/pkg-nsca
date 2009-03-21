@@ -7,6 +7,7 @@ nsca (2.7.2) unstable; urgency=low
   * Refer to nagios3 in command_file configuration
     (Closes: #509334)
   * Add submit_check_result example script (Closes: #485472)
+  * Remove 05_nsca_format_string.dpatch (included upstream)
 
  -- Alexander Wirt <formorer@debian.org>  Sat, 21 Mar 2009 20:21:07 +0100
 
