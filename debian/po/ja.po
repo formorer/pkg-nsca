@@ -1,7 +1,7 @@
 # Copyright (C) 2006-2009 Debian Nagios Maintainer Group <pkg-nagios-devel@lists.alioth.debian.org>
 # This file is distributed under the same license as the nsca package.
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2009.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: nsca 2.6-4\n"
@@ -28,9 +28,9 @@ msgid ""
 "send_nsca on remote hosts.  Typically the nsca daemon is only needed on "
 "hosts that run the nagios daemon."
 msgstr ""
-"nsca デーモンはリモートホスト上の send_nsca 経由で送られるサービスチェックの結果"
-"を管理するプロセスです。概して nsca デーモンは nagios デーモンが動作しているホス"
-"ト上でのみ必要とされます。"
+"nsca デーモンはリモートホスト上の send_nsca 経由で送られるサービスチェックの"
+"結果を管理するプロセスです。概して nsca デーモンは nagios デーモンが動作して"
+"いるホスト上でのみ必要とされます。"
 
 #. Type: boolean
 #. Description
@@ -43,9 +43,8 @@ msgid ""
 "nsca as a service through inetd/xinetd, you should also not choose this "
 "option."
 msgstr ""
-"nsca をインストールしているシステム上で nagios デーモンも動作している場合はこの"
-"オプションを選ぶと良いでしょう。中央の nagios ホストへサービスチェックを送信する"
-"ために nsca をリモートの \"satellite\" システムにインストールしている場合、この"
-"オプションは選択しないでください。nsca を inetd/xinetd 経由のサービスとして動作"
-"させたい場合も同様にこのオプションを選択しないでください。"
-
+"nsca をインストールしているシステム上で nagios デーモンも動作している場合はこ"
+"のオプションを選ぶと良いでしょう。中央の nagios ホストへサービスチェックを送"
+"信するために nsca をリモートの \"satellite\" システムにインストールしている場"
+"合、このオプションは選択しないでください。nsca を inetd/xinetd 経由のサービス"
+"として動作させたい場合も同様にこのオプションを選択しないでください。"

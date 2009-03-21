@@ -1,4 +1,4 @@
-nsca (2.7.2) unstable; urgency=low
+nsca (2.7.2-1) unstable; urgency=low
 
   * New upstream version (Closes: #466353)
   * Add swedish translation (Closes: #503606)
