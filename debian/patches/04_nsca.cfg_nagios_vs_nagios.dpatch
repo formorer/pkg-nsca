@@ -5,25 +5,28 @@
 ## DP: No description.
 
 @DPATCH@
-diff -urNad nsca-2.5~/sample-config/nsca.cfg.in nsca-2.5/sample-config/nsca.cfg.in
---- nsca-2.5~/sample-config/nsca.cfg.in	2006-01-22 01:14:55.000000000 +0100
-+++ nsca-2.5/sample-config/nsca.cfg.in	2006-02-12 21:13:43.000000000 +0100
-@@ -56,8 +56,12 @@
+diff -urNad nsca-2.6~/sample-config/nsca.cfg.in nsca-2.6/sample-config/nsca.cfg.in
+--- nsca-2.6~/sample-config/nsca.cfg.in	2006-04-06 22:19:30.000000000 +0100
++++ nsca-2.6/sample-config/nsca.cfg.in	2009-02-19 15:11:22.000000000 +0000
+@@ -77,9 +77,14 @@
  # COMMAND FILE
  # This is the location of the Nagios command file that the daemon
  # should write all service check results that it receives.
 -
 -command_file=@localstatedir@/rw/nagios.cmd
+-
 +# Note to debian users: nagios 1.x and nagios 2.x have
 +# different default locations for this file.  this is the
 +# default location for nagios 1.x:
-+command_file=/var/run/nagios/nagios.cmd
++#command_file=/var/run/nagios/nagios.cmd
 +# and this is the default location for nagios2:
 +#command_file=/var/lib/nagios2/rw/nagios.cmd
- 
++# and this is the default location for nagios3:
++command_file=/var/lib/nagios3/rw/nagios.cmd
  
  # ALTERNATE DUMP FILE
-@@ -70,8 +74,7 @@
+ # This is used to specify an alternate file the daemon should
+@@ -91,8 +96,7 @@
  # it starts Nagios.  Or you may simply choose to ignore any
  # check results received while Nagios was not running...
  

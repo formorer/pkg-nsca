@@ -1,0 +1,70 @@
+# nsca po-debconf translation to Spanish.
+# Copyright (C) 2009 Software in the Public Interest, SPI Inc.
+# This file is distributed under the same license as the nsca package.
+#
+#  Changes:
+# - Initial translation
+#       Fernando González de Requena <fgrequena@gmail.com>, 2009.
+#
+#  Traductores, si no conoce el formato PO, merece la pena leer la 
+#  documentación de gettext, especialmente las secciones dedicadas a este
+#  formato, por ejemplo ejecutando:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+# Equipo de traducción al español, por favor lean antes de traducir
+# los siguientes documentos:
+#
+# - El proyecto de traducción de Debian al español
+#   http://www.debian.org/intl/spanish/
+#   especialmente las notas y normas de traducción en
+#   http://www.debian.org/intl/spanish/notas
+#
+# - La guía de traducción de po's de debconf:
+#   /usr/share/doc/po-debconf/README-trans
+#   o http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+# Si tiene dudas o consultas sobre esta traducción consulte con el último
+# traductor (campo Last-Translator) y ponga en copia a la lista de
+# traducción de Debian al español (<debian-l10n-spanish@lists.debian.org>)
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nsca 2.6-4\n"
+"Report-Msgid-Bugs-To: pkg-nagios-devel@lists.alioth.debian.org\n"
+"POT-Creation-Date: 2006-11-01 19:55+0100\n"
+"PO-Revision-Date: 2009-02-01 12:13+0100\n"
+"Last-Translator: Fernando González de Requena <fgrequena@gmail.com>\n"
+"Language-Team: Spanish <debian-l10n-spanish@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:1001
+msgid "Should the nsca daemon be enabled by default?"
+msgstr "¿Desea habilitar el demonio nsca de manera predeterminada?"
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:1001
+msgid ""
+"The nsca daemon is the process that handles results service checks sent via "
+"send_nsca on remote hosts.  Typically the nsca daemon is only needed on "
+"hosts that run the nagios daemon."
+msgstr "El demonio nsca es el proceso que maneja los resultados de la comprobación de servicios enviada a máquinas remotas a través de send_nsca. Normalmente sólo se necesita el demonio nsca en máquinas que ejecuten el demonio nagios."
+
+#. Type: boolean
+#. Description
+#: ../nsca.templates:1001
+msgid ""
+"If the system on which you are installing nsca also runs the nagios daemon, "
+"you should most likely choose this option.  If you are installing nsca on a "
+"remote \"satellite\" system for the purpose of sending service checks to a "
+"central nagios host, you should not choose this option.  If you wish to run "
+"nsca as a service through inetd/xinetd, you should also not choose this "
+"option."
+msgstr "Debería escoger esta opción si el sistema en el que está instalando nsca ejecuta tambien el demonio nagios. No debería escogerla si está instalando nsca en un sistema remoto «satélite» con la intención de enviar comprobaciones de servicios a un servidor central nagios. Tampoco debería escoger esta opción si desea ejecutar nsca como un servicio a través de inetd/xinetd."
+
