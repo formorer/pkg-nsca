@@ -9,7 +9,7 @@ Build-Depends: libmcrypt-dev, dpatch, debhelper (>= 4.0.0), po-debconf
 Package: nsca
 Architecture: any
 Depends: ${shlibs:Depends}, debconf (>> 0.5) | debconf-2.0, ${misc:Depends}
-Suggests: nagios, nagios-plugins-basic | nagios-plugins
+Suggests: nagios3, nagios-plugins-basic | nagios-plugins
 Description: Nagios service monitor agent
  This addon allows you to send service check results to a central
  monitoring server running Nagios in a reasonably secure manner.
