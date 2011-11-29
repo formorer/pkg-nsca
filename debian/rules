@@ -1,85 +1,16 @@
 #!/usr/bin/make -f
 
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0 -Wall
-else
-	CFLAGS += -O2 -Wall
-endif
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-	INSTALL_PROGRAM += -s
-endif
-
-# Should we build nsca-client
-ifndef buildclientpackage
-buildclientpackage=no
-endif
-
-# These are used for cross-compiling and for saving the configure script
-# from having to guess our platform (since we know it already)
-DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-
 include /usr/share/dpatch/dpatch.make
 
-NSCA=debian/nsca
-SEND_NSCA=debian/nsca
+%:
+	dh $@ --with dpatch
 
-# set variables for packages to build
-ifeq ($(buildclientpackage),yes)
-buildpackages=nsca nsca-client
-else
-buildpackages=nsca
-endif
-
-# generate -pnsca -pnsca-client ... commandline for debhelper
-dhbuildpackages=$(addprefix -p,$(buildpackages))
-
-build: build-stamp
-build-stamp: patch-stamp
-	dh_testdir $(dhbuildpackages)
-	./configure --with-nsca-user=nagios --with-nsca-grp=nogroup --with-nsca-port=5667 --prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib/nagios
-	$(MAKE) all
-	touch build-stamp
-
-clean: unpatch
-	dh_testdir $(dhbuildpackages)
-	dh_testroot $(dhbuildpackages)
-	if test -f Makefile; then $(MAKE) distclean; fi
-	dh_clean
-	debconf-updatepo
-	rm -f build-stamp install-stamp
-
-install: install-stamp
-install-stamp: build-stamp
-	dh_testdir $(dhbuildpackages)
-	dh_testroot $(dhbuildpackages)
-	dh_clean -k
-	dh_installdebconf
-	dh_installdirs $(dhbuildpackages)
-	dh_installchangelogs $(dhbuildpackages) Changelog
-	dh_installdocs $(dhbuildpackages) README
-	dh_installexamples $(dhbuildpackages)
-	dh_installinit $(dhbuildpackages) -n -u defaults 30
-	dh_installman  $(dhbuildpackages)
-	dh_install $(dhbuildpackages)
-	for p in ${buildpackages}; do \
-		chmod 640 debian/$$p/etc/send_nsca.cfg; \
-	done
-	chmod 640 debian/nsca/etc/nsca.cfg
-	touch install-stamp
-
-binary: binary-indep binary-arch
-binary-indep: 
-binary-arch: install-stamp
-	dh_testdir $(dhbuildpackages)
-	dh_testroot $(dhbuildpackages)
-	dh_strip $(dhbuildpackages)
-	dh_compress $(dhbuildpackages)
-	dh_fixperms $(dhbuildpackages)
-	dh_installdeb $(dhbuildpackages)
-	dh_shlibdeps $(dhbuildpackages)
-	dh_gencontrol $(dhbuildpackages)
-	dh_md5sums $(dhbuildpackages)
-	dh_builddeb $(dhbuildpackages)
-
-.PHONY: binary binary-arch binary-indep clean install
+override_dh_auto_configure:
+	./configure \
+		--with-nsca-user=nagios \
+		--with-nsca-grp=nogroup \
+		--with-nsca-port=5667 \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib/nagios
