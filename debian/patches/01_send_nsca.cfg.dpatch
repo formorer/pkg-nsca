@@ -4,9 +4,9 @@
 ## DP: default to /etc/send_nsca.cfg instead of ./send_nsca.cfg
 
 @DPATCH@
-diff -urNad sid~/src/send_nsca.c sid/src/send_nsca.c
---- sid~/src/send_nsca.c	2003-07-24 02:08:36.000000000 +0200
-+++ sid/src/send_nsca.c	2005-12-05 11:09:21.000000000 +0100
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' pkg-nsca~/src/send_nsca.c pkg-nsca/src/send_nsca.c
+--- pkg-nsca~/src/send_nsca.c	2011-11-29 08:40:05.000000000 +0100
++++ pkg-nsca/src/send_nsca.c	2011-11-29 18:24:26.328039621 +0100
 @@ -25,7 +25,7 @@
  int server_port=DEFAULT_SERVER_PORT;
  char server_name[MAX_HOST_ADDRESS_LENGTH];
@@ -14,5 +14,4 @@ diff -urNad sid~/src/send_nsca.c sid/src/send_nsca.c
 -char config_file[MAX_INPUT_BUFFER]="send_nsca.cfg";
 +char config_file[MAX_INPUT_BUFFER]="/etc/send_nsca.cfg";
  char delimiter[2]="\t";
- 
- char received_iv[TRANSMITTED_IV_SIZE];
+ char block_delimiter[2]=BLOCK_DELIMITER;

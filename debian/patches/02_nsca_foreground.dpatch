@@ -6,19 +6,19 @@
 ## DP: external tools like s-s-d to track the pid
 
 @DPATCH@
-diff -urNad sid~/src/nsca.c sid/src/nsca.c
---- sid~/src/nsca.c	2005-12-05 11:24:12.000000000 +0100
-+++ sid/src/nsca.c	2005-12-05 11:32:44.000000000 +0100
-@@ -60,6 +60,8 @@
- int show_license=FALSE;
- int show_version=FALSE;
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' pkg-nsca~/src/nsca.c pkg-nsca/src/nsca.c
+--- pkg-nsca~/src/nsca.c	2011-11-29 08:40:05.000000000 +0100
++++ pkg-nsca/src/nsca.c	2011-11-29 18:29:39.308036635 +0100
+@@ -54,6 +54,8 @@
+ int     show_license=FALSE;
+ int     show_version=FALSE;
  
 +int foreground=FALSE;
 +
- static FILE *command_file_fp=NULL;
+ int     sigrestart=FALSE;
+ int     sigshutdown=FALSE;
  
- struct handler_entry{
-@@ -109,10 +111,11 @@
+@@ -112,10 +114,11 @@
  	        }
  
  	if(result!=OK || show_help==TRUE){
@@ -31,16 +31,16 @@ diff -urNad sid~/src/nsca.c sid/src/nsca.c
  		printf(" [mode]        = Determines how NSCA should run. Valid modes:\n");
                  printf("   --inetd     = Run as a service under inetd or xinetd\n");
                  printf("   --daemon    = Run as a standalone multi-process daemon\n");
-@@ -182,7 +185,7 @@
+@@ -198,7 +201,7 @@
+ 		       V     */
  
-         case SINGLE_PROCESS_DAEMON:
                  /* daemonize and start listening for requests... */
 -                if(fork()==0){
-+                if(foreground || fork()==0){
++		if(foreground || fork()==0){
  
                          /* we're a daemon - set up a new process group */
                          setsid();
-@@ -1121,6 +1124,10 @@
+@@ -1378,6 +1381,10 @@
  		else if(!strcmp(argv[x-1],"-V") || !strcmp(argv[x-1],"--version"))
  			show_version=TRUE;
  
