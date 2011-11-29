@@ -39,9 +39,7 @@ Conflicts: nsca
 Description: Nagios service monitor agent - client package
  This package contains only the client part of nsca and is thus
  suitable for installation on systems that only report passive service
- checks to a central server. It is not part of official Debian and not
- built by default. You can enable building of this package in
- debian/rules.
+ checks to a central server.
  .
  Nagios is a monitoring and management system for hosts, services and
  networks.
