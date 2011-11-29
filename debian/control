@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Debian Nagios Maintainer Group <pkg-nagios-devel@lists.alioth.debian.org>
 Uploaders: Alexander Wirt <formorer@debian.org>
-Standards-Version: 3.8.0
+Standards-Version: 3.9.2
 Build-Depends: libmcrypt-dev, dpatch, debhelper (>= 4.0.0), po-debconf
 
 Package: nsca
