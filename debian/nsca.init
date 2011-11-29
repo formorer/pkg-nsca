@@ -19,10 +19,7 @@ PIDFILE="/var/run/nsca.pid"
 
 ###
 
-# obviously if the daemon doesn't exist we should stop now
-if [ ! -x $DAEMON ]; then
-	exit 0
-fi
+test -f $DAEMON || exit 0
 
 # grab an arbitrary config setting from nsca.cfg
 get_config(){
@@ -48,8 +45,8 @@ else
 	SSD_STOPOPTS="--pidfile $PIDFILE"
 fi
 
-SSD_START="/sbin/start-stop-daemon --oknodo -S $SSD_STARTOPTS --exec $DAEMON"
-SSD_STOP="/sbin/start-stop-daemon --oknodo -K $SSD_STOPOPTS --exec $DAEMON"
+SSD_START="start-stop-daemon --start --oknodo -S $SSD_STARTOPTS --exec $DAEMON"
+SSD_STOP="start-stop-daemon --stop --oknodo -K $SSD_STOPOPTS --exec $DAEMON"
 
 die(){
 	echo $@

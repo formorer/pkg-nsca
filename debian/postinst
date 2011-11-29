@@ -6,8 +6,7 @@ pkg=nsca
 
 case "$1" in
 configure)
-	db_get nsca/run-nsca-daemon
-	new_runnsca="$RET"
+	db_get nsca/run-nsca-daemon && new_runnsca="$RET"
 	;;
 abort-upgrade|abort-remove|abort-deconfigure)
 	exit 0
@@ -66,6 +65,10 @@ if [ -x "/etc/init.d/nsca" ]; then
 		else 
 			update-rc.d nsca defaults >/dev/null
 		fi
+	fi
+
+	if [ "$new_runnsca" = "false" ]; then
+		exit 0
 	fi
 
 	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then

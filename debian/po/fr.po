@@ -7,8 +7,8 @@
 # /usr/share/doc/po-debconf/README-trans
 # or http://www.debian.org/intl/l10n/po-debconf/README-trans
 # Developers do not need to manually edit POT or PO files.
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: nsca 2.5-2\n"
@@ -17,6 +17,7 @@ msgstr ""
 "PO-Revision-Date: 2006-04-10 12:40+0200\n"
 "Last-Translator: Sylvain Archenault <sylvain.archenault@laposte.net>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"

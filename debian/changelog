@@ -1,17 +1,22 @@
-nsca (2.7.2-3) unstable; urgency=low
+nsca (2.7.2+nmu2) unstable; urgency=high
 
-  * Suggest nagios3 instead of nagios (Closes: #543901)
+  * Non-maintainer upload.
+  * Respect configuration rather than blindly starting nsca
+    as user "nobody" (closes: #606951)
+  * Add Danish translation (closes: #600114)
+  * Suggest nagios3, not nagios, in the binary package (closes: #543901)
 
- -- Alexander Wirt <formorer@debian.org>  Thu, 27 Aug 2009 13:25:36 +0200
+ -- Jonathan Wiltshire <jmw@debian.org>  Sun, 26 Dec 2010 15:31:01 +0000
 
-nsca (2.7.2-2) unstable; urgency=low
+nsca (2.7.2+nmu1) unstable; urgency=low
 
-  * Make the package non-native again *narf*
-    (Closes: #520873)
+  * Non-maintainer upload.
+  * Fix nsca starting as daemon when disabled in debconf and using an unusual
+    PID (Closes: #604053).
 
- -- Alexander Wirt <formorer@debian.org>  Sat, 04 Apr 2009 10:31:59 +0200
+ -- Xavier Oswald <xoswald@debian.org>  Sun, 28 Nov 2010 10:59:05 +0100
 
-nsca (2.7.2-1) unstable; urgency=low
+nsca (2.7.2) unstable; urgency=low
 
   * New upstream version (Closes: #466353)
   * Add swedish translation (Closes: #503606)

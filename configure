@@ -310,7 +310,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA INSTALL build build_cpu build_vendor build_os host host_cpu host_vendor host_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT SET_MAKE CPP EGREP SOCKETLIBS LIBWRAPLIBS LIBMCRYPT_CONFIG LIBMCRYPT_CFLAGS LIBMCRYPT_LIBS log_facility nsca_user nsca_grp nsca_port PERL LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA INSTALL build build_cpu build_vendor build_os host host_cpu host_vendor host_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT SET_MAKE CPP EGREP SOCKETLIBS LIBWRAPLIBS LIBMCRYPT_CONFIG LIBMCRYPT_CFLAGS LIBMCRYPT_LIBS nsca_user nsca_grp nsca_port PERL LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -848,7 +848,6 @@ Optional Packages:
 --with-mcrypt-lib=DIR sets location of the mcrypt client library
 --with-mcrypt-inc=DIR sets location of the mcrypt client include files
   --with-libmcrypt-prefix=PFX   Prefix where libmcrypt is installed (optional)
---with-log-facility=<facility> sets NSCA syslog facility
 --with-nsca-user=<user> sets user name to run NSCA
 --with-nsca-grp=<grp> sets group name to run NSCA
 --with-nsca-port=<port> sets port number for NSCA to listen on
@@ -1289,9 +1288,9 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 PKG_NAME=nsca
-PKG_VERSION="2.9"
+PKG_VERSION="2.7.2"
 PKG_HOME_URL="http://www.nagios.org/"
-PKG_REL_DATE="10-31-2011"
+PKG_REL_DATE="07-03-2007"
 
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -3319,69 +3318,6 @@ if test $ac_cv_c_const = no; then
 
 cat >>confdefs.h <<\_ACEOF
 #define const
-_ACEOF
-
-fi
-
-echo "$as_me:$LINENO: checking for working volatile" >&5
-echo $ECHO_N "checking for working volatile... $ECHO_C" >&6
-if test "${ac_cv_c_volatile+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-volatile int x;
-int * volatile y;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_c_volatile=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_c_volatile=no
-fi
-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_c_volatile" >&5
-echo "${ECHO_T}$ac_cv_c_volatile" >&6
-if test $ac_cv_c_volatile = no; then
-
-cat >>confdefs.h <<\_ACEOF
-#define volatile
 _ACEOF
 
 fi
@@ -5641,80 +5577,6 @@ fi
 done
 
 
-echo "$as_me:$LINENO: checking for sig_atomic_t" >&5
-echo $ECHO_N "checking for sig_atomic_t... $ECHO_C" >&6
-if test "${ac_cv_type_sig_atomic_t+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-	#if HAVE_SIGNAL_H
-	#include <signal.h>
-	#endif
-
-
-int
-main ()
-{
-if ((sig_atomic_t *) 0)
-  return 0;
-if (sizeof (sig_atomic_t))
-  return 0;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_type_sig_atomic_t=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_type_sig_atomic_t=no
-fi
-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_type_sig_atomic_t" >&5
-echo "${ECHO_T}$ac_cv_type_sig_atomic_t" >&6
-if test $ac_cv_type_sig_atomic_t = yes; then
-  :
-else
-
-
-cat >>confdefs.h <<\_ACEOF
-#define sig_atomic_t int
-_ACEOF
-
-
-fi
-
-
 echo "$as_me:$LINENO: checking for socklen_t" >&5
 echo $ECHO_N "checking for socklen_t... $ECHO_C" >&6
 if test "${ac_cv_type_socklen_t+set}" = set; then
@@ -6369,20 +6231,6 @@ if test x$MCRYPTLIBFOUND = xnope; then
 	echo "**************************************************************"
 	echo ""
 fi
-
-
-
-# Check whether --with-log_facility or --without-log_facility was given.
-if test "${with_log_facility+set}" = set; then
-  withval="$with_log_facility"
-  log_facility=$withval
-else
-  log_facility=daemon
-fi;
-
-cat >>confdefs.h <<_ACEOF
-#define NSCA_LOG_FACILITY "$log_facility"
-_ACEOF
 
 
 
@@ -7044,7 +6892,6 @@ s,@LIBWRAPLIBS@,$LIBWRAPLIBS,;t t
 s,@LIBMCRYPT_CONFIG@,$LIBMCRYPT_CONFIG,;t t
 s,@LIBMCRYPT_CFLAGS@,$LIBMCRYPT_CFLAGS,;t t
 s,@LIBMCRYPT_LIBS@,$LIBMCRYPT_LIBS,;t t
-s,@log_facility@,$log_facility,;t t
 s,@nsca_user@,$nsca_user,;t t
 s,@nsca_grp@,$nsca_grp,;t t
 s,@nsca_port@,$nsca_port,;t t
