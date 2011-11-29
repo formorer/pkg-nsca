@@ -7,8 +7,4 @@ if [ "$1" = "purge" ] ; then
 	fi
 fi
 
-if [ "$1" = "purge" ] ; then
-	update-rc.d nsca remove >/dev/null || exit 0
-fi
-
 #DEBHELPER#
