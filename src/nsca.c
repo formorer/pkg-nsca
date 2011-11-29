@@ -1,10 +1,11 @@
 /*******************************************************************************
  *
  * NSCA.C - Nagios Service Check Acceptor
- * Copyright (c) 2000-2007 Ethan Galstad (nagios@nagios.org)
+ * Copyright (c) 2009 Nagios Core Development Team and Community Contributors
+ * Copyright (c) 2000-2009 Ethan Galstad (egalstad@nagios.org)
  * License: GPL v2
  *
- * Last Modified: 07-03-2007
+ * Last Modified: 10-31-2011
  *
  * Command line: NSCA -c <config_file> [mode]
  *
@@ -25,6 +26,7 @@
 static int server_port=DEFAULT_SERVER_PORT;
 static char server_address[16]="0.0.0.0";
 static int socket_timeout=DEFAULT_SOCKET_TIMEOUT;
+static int log_facility=LOG_DAEMON;
 
 static char config_file[MAX_INPUT_BUFFER]="nsca.cfg";
 static char alternate_dump_file[MAX_INPUT_BUFFER]="/dev/null";
@@ -42,6 +44,8 @@ char    *nsca_user=NULL;
 char    *nsca_group=NULL;
 
 char    *nsca_chroot=NULL;
+char    *check_result_path=NULL;
+
 
 char    *pid_file=NULL;
 int     wrote_pid_file=FALSE;
@@ -53,6 +57,7 @@ int     show_version=FALSE;
 int     sigrestart=FALSE;
 int     sigshutdown=FALSE;
 
+int	using_alternate_dump_file=FALSE;
 static FILE *command_file_fp=NULL;
 
 struct handler_entry *rhand=NULL;
@@ -88,7 +93,8 @@ int main(int argc, char **argv){
 			printf("Incorrect command line arguments supplied\n");
                 printf("\n");
                 printf("NSCA - Nagios Service Check Acceptor\n");
-                printf("Copyright (c) 2000-2007 Ethan Galstad (www.nagios.org)\n");
+		printf("Copyright (c) 2009 Nagios Core Development Team and Community Contributors\n");
+                printf("Copyright (c) 2000-2009 Ethan Galstad\n");
                 printf("Version: %s\n",PROGRAM_VERSION);
                 printf("Last Modified: %s\n",MODIFICATION_DATE);
                 printf("License: GPL v2\n");
@@ -131,7 +137,9 @@ int main(int argc, char **argv){
 
 
         /* open a connection to the syslog facility */
-        openlog("nsca",LOG_PID|LOG_NDELAY,LOG_DAEMON); 
+	/* facility may be overridden later */
+	get_log_facility(NSCA_LOG_FACILITY);
+        openlog("nsca",LOG_PID|LOG_NDELAY,log_facility); 
 
 	/* make sure the config file uses an absolute path */
 	if(config_file[0]!='/'){
@@ -236,6 +244,9 @@ int main(int argc, char **argv){
 
 				if(sigrestart==TRUE){
 
+					/* free memory */
+					free_memory();
+
 					/* re-read the config file */
 					result=read_config_file(config_file);	
 
@@ -270,6 +281,9 @@ int main(int argc, char **argv){
 /* cleanup */
 static void do_cleanup(void){
 
+	/* free memory */
+	free_memory();
+
         /* close the command file if its still open */
         if(command_file_fp!=NULL)
                 close_command_file();
@@ -284,6 +298,31 @@ static void do_cleanup(void){
 
 	return;
         }
+
+
+/* free some memory */
+static void free_memory(void){
+
+	if(nsca_user){
+		free(nsca_user);
+		nsca_user=NULL;
+		}
+	if(nsca_group){
+		free(nsca_group);
+		nsca_group=NULL;
+		}
+	if(nsca_chroot){
+		free(nsca_chroot);
+		nsca_chroot=NULL;
+		}
+	if(pid_file){
+		free(pid_file);
+		pid_file=NULL;
+		}
+
+	return;
+	}
+
 
 
 /* exit cleanly */
@@ -428,6 +467,27 @@ static int read_config_file(char *filename){
                         else 
                                 aggregate_writes=FALSE;
                         }
+                    else if(strstr(input_buffer,"check_result_path")){
+                            if(strlen(varvalue)>MAX_INPUT_BUFFER-1){
+                                    syslog(LOG_ERR,"Check result path is too long in config file '%s' - Line %d\n",filename,line);
+                                    return ERROR;
+                                    }
+                            check_result_path=strdup(varvalue);
+                            
+                            int checkresult_test_fd=-1;
+                            char *checkresult_test=NULL;
+                            asprintf(&checkresult_test,"%s/nsca.test.%i",check_result_path,getpid());
+                            checkresult_test_fd=open(checkresult_test,O_WRONLY|O_CREAT);
+                            if (checkresult_test_fd>0){
+                                    unlink(checkresult_test);
+                                    }
+                            else {
+                                    printf("error!\n");
+                                    syslog(LOG_ERR,"check_result_path config variable found, but directory not writeable.\n");
+                                    return ERROR;
+                                    }
+                            }
+
 		else if(strstr(input_buffer,"append_to_file")){
                         if(atoi(varvalue)>0)
                                 append_to_file=TRUE;
@@ -454,9 +514,18 @@ static int read_config_file(char *filename){
 		else if(!strcmp(varname,"pid_file"))
 			pid_file=strdup(varvalue);
 
+		else if(!strcmp(varname,"log_facility")){
+			if((get_log_facility(varvalue))==OK){
+				/* re-open log using new facility */
+				closelog();
+				openlog("nsca",LOG_PID|LOG_NDELAY,log_facility); 
+				}
+			else
+				syslog(LOG_WARNING,"Invalid log_facility specified in config file '%s' - Line %d\n",filename,line);
+			}
+
 		else{
                         syslog(LOG_ERR,"Unknown option specified in config file '%s' - Line %d\n",filename,line);
-
                         return ERROR;
                         }
                 }
@@ -466,6 +535,59 @@ static int read_config_file(char *filename){
 
         return OK;
         }
+
+
+
+/* determines facility to use with syslog */
+int get_log_facility(char *varvalue){
+
+	if(!strcmp(varvalue,"kern"))
+		log_facility=LOG_KERN;
+	else if(!strcmp(varvalue,"user"))
+		log_facility=LOG_USER;
+	else if(!strcmp(varvalue,"mail"))
+		log_facility=LOG_MAIL;
+	else if(!strcmp(varvalue,"daemon"))
+		log_facility=LOG_DAEMON;
+	else if(!strcmp(varvalue,"auth"))
+		log_facility=LOG_AUTH;
+	else if(!strcmp(varvalue,"syslog"))
+		log_facility=LOG_SYSLOG;
+	else if(!strcmp(varvalue,"lrp"))
+		log_facility=LOG_LPR;
+	else if(!strcmp(varvalue,"news"))
+		log_facility=LOG_NEWS;
+	else if(!strcmp(varvalue,"uucp"))
+		log_facility=LOG_UUCP;
+	else if(!strcmp(varvalue,"cron"))
+		log_facility=LOG_CRON;
+	else if(!strcmp(varvalue,"authpriv"))
+		log_facility=LOG_AUTHPRIV;
+	else if(!strcmp(varvalue,"ftp"))
+		log_facility=LOG_FTP;
+	else if(!strcmp(varvalue,"local0"))
+		log_facility=LOG_LOCAL0;
+	else if(!strcmp(varvalue,"local1"))
+		log_facility=LOG_LOCAL1;
+	else if(!strcmp(varvalue,"local2"))
+		log_facility=LOG_LOCAL2;
+	else if(!strcmp(varvalue,"local3"))
+		log_facility=LOG_LOCAL3;
+	else if(!strcmp(varvalue,"local4"))
+		log_facility=LOG_LOCAL4;
+	else if(!strcmp(varvalue,"local5"))
+		log_facility=LOG_LOCAL5;
+	else if(!strcmp(varvalue,"local6"))
+		log_facility=LOG_LOCAL6;
+	else if(!strcmp(varvalue,"local7"))
+		log_facility=LOG_LOCAL7;
+	else{
+		log_facility=LOG_DAEMON;
+		return ERROR;
+		}
+
+	return OK;
+	}
 
 
 
@@ -923,7 +1045,7 @@ static void handle_connection(int sock, void *data){
                 }
 
         /* open the command file if we're aggregating writes */
-        if(aggregate_writes==TRUE && !command_file_fp){
+        if(aggregate_writes==TRUE){
                 if(open_command_file()==ERROR){
                         close(sock);
 			if(mode==MULTI_PROCESS_DAEMON)
@@ -1080,16 +1202,83 @@ static void handle_connection_read(int sock, void *data){
          * use poll() - which fails on a pipe with any data, so it would cause us to
          * only ever write one command at a time into the pipe.
          */
+        //syslog(LOG_ERR,"'%s' (%s) []",check_result_path, strlen(check_result_path));
+        if (check_result_path==NULL){
         write_check_result(host_name,svc_description,return_code,plugin_output,time(NULL));
+        }else{
+                write_checkresult_file(host_name,svc_description,return_code,plugin_output,time(NULL));
+        }
 
 	return;
         }
 
 
 
+/* writes service/host check results to the Nagios checkresult directory */
+static int write_checkresult_file(char *host_name, char *svc_description, int return_code, char *plugin_output, time_t check_time){
+	if(debug==TRUE)
+		syslog(LOG_ERR,"Attempting to write checkresult file");
+        mode_t new_umask=077;
+        mode_t old_umask;
+        time_t current_time;
+        char *output_file=NULL;
+        int checkresult_file_fd=-1;
+        char *checkresult_file=NULL;
+        char *checkresult_ok_file=NULL;
+        FILE *checkresult_file_fp=NULL;
+        FILE *checkresult_ok_file_fp=NULL;
+        /* change and store umask */
+        old_umask=umask(new_umask);
+
+        /* create safe checkresult file */
+        asprintf(&checkresult_file,"%s/cXXXXXX",check_result_path);
+        checkresult_file_fd=mkstemp(checkresult_file);
+        if(checkresult_file_fd>0){
+                checkresult_file_fp=fdopen(checkresult_file_fd,"w");
+        } else {
+                syslog(LOG_ERR,"Unable to open and write checkresult file '%s', failing back to PIPE",checkresult_file);
+                return write_check_result(host_name,svc_description,return_code,plugin_output,check_time);
+                }
+        
+	if(debug==TRUE)
+		syslog(LOG_ERR,"checkresult file '%s' open for write.",checkresult_file);
+
+        time(&current_time);
+        fprintf(checkresult_file_fp,"### NSCA Passive Check Result ###\n");
+        fprintf(checkresult_file_fp,"# Time: %s",ctime(&current_time));
+        fprintf(checkresult_file_fp,"file_time=%d\n\n",current_time);
+        fprintf(checkresult_file_fp,"### %s Check Result ###\n",(svc_description=="")?"Host":"Service");
+        fprintf(checkresult_file_fp,"host_name=%s\n",host_name);
+        if(strcmp(svc_description,""))
+                fprintf(checkresult_file_fp,"service_description=%s\n",svc_description);
+        fprintf(checkresult_file_fp,"check_type=1\n");
+        fprintf(checkresult_file_fp,"scheduled_check=0\n");
+        fprintf(checkresult_file_fp,"reschedule_check=0\n");
+        /* We have no latency data at this point. */
+        fprintf(checkresult_file_fp,"latency=0\n");
+        fprintf(checkresult_file_fp,"start_time=%lu.%lu\n",check_time,0L);
+        fprintf(checkresult_file_fp,"finish_time=%lu.%lu\n",check_time,0L);
+        fprintf(checkresult_file_fp,"return_code=%d\n",return_code);
+        /* newlines in output are already escaped */
+        fprintf(checkresult_file_fp,"output=%s\n",(plugin_output==NULL)?"":plugin_output);
+        fprintf(checkresult_file_fp,"\n");
+
+        fclose(checkresult_file_fp);
+        /* create and close ok file */
+        asprintf(&checkresult_ok_file,"%s.ok",checkresult_file);
+        syslog(LOG_DEBUG,"checkresult completion file '%s' open.",checkresult_ok_file);
+        checkresult_ok_file_fp = fopen(checkresult_ok_file,"w");
+        fclose(checkresult_ok_file_fp);
+        /* reset umask */
+        umask(old_umask);
+
+        return OK;
+        }
+
 /* writes service/host check results to the Nagios command file */
 static int write_check_result(char *host_name, char *svc_description, int return_code, char *plugin_output, time_t check_time){
-
+	if(debug==TRUE)
+		syslog(LOG_ERR,"Attempting to write to nagios command pipe");
         if(aggregate_writes==FALSE){
                 if(open_command_file()==ERROR)
                         return ERROR;
@@ -1097,9 +1286,9 @@ static int write_check_result(char *host_name, char *svc_description, int return
 
 	if(!strcmp(svc_description,""))
 		fprintf(command_file_fp,"[%lu] PROCESS_HOST_CHECK_RESULT;%s;%d;%s\n",(unsigned long)check_time,host_name,return_code,plugin_output);
-	else
+	else{
 		fprintf(command_file_fp,"[%lu] PROCESS_SERVICE_CHECK_RESULT;%s;%s;%d;%s\n",(unsigned long)check_time,host_name,svc_description,return_code,plugin_output);
-
+                }
         if(aggregate_writes==FALSE)
                 close_command_file();
         else
@@ -1119,7 +1308,7 @@ static int open_command_file(void){
 	struct stat statbuf;
 
         /* file is already open */
-        if(command_file_fp!=NULL)
+        if(command_file_fp!=NULL && using_alternate_dump_file==FALSE)
                 return OK;
 
 	/* command file doesn't exist - monitoring app probably isn't running... */
@@ -1135,6 +1324,7 @@ static int open_command_file(void){
 				syslog(LOG_ERR,"Could not open alternate dump file '%s' for appending",alternate_dump_file);
 			return ERROR;
                         }
+		using_alternate_dump_file=TRUE;
 
 		return OK;
 	        }
@@ -1147,6 +1337,7 @@ static int open_command_file(void){
                 return ERROR;
                 }
 
+	using_alternate_dump_file=FALSE;
         return OK;
         }
 

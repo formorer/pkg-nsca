@@ -1,8 +1,8 @@
 /************************************************************************
  *
  * NSCA.H - NSCA Include File
- * Copyright (c) 1999-2006 Ethan Galstad (nagios@nagios.org)
- * Last Modified: 04-03-2006
+ * Copyright (c) 1999-2009 Ethan Galstad (nagios@nagios.org)
+ * Last Modified: 07-07-2009
  *
  * License:
  *
@@ -39,8 +39,11 @@ static void install_child_handler(void);
 static int process_arguments(int,char **);
 static int read_config_file(char *);
 
+int get_log_facility(char *);
+
 static int open_command_file(void);
 static void close_command_file(void);
+static int write_checkresult_file(char *,char *,int,char *,time_t);
 static int write_check_result(char *,char *,int,char *,time_t);
 
 static int get_user_info(const char *,uid_t *);
@@ -48,6 +51,7 @@ static int get_group_info(const char *,gid_t *);
 static int drop_privileges(const char *,uid_t,gid_t);
 static void do_chroot(void);
 static void do_exit(int);
+static void free_memory(void);
 
 static int write_pid_file(uid_t,gid_t);
 static int remove_pid_file(void);
