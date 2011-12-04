@@ -1,14 +1,15 @@
 #!/bin/sh
+
 ### BEGIN INIT INFO
 # Provides:          nsca
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
+# Required-Start:    $local_fs $remote_fs $syslog $named $network $time
+# Required-Stop:     $local_fs $remote_fs $syslog $named $network
+# Should-Start:
+# Should-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
+# Short-Description: Start/Stop the Nagios Service Check Acceptor (nsca) daemon
 ### END INIT INFO
-
-# simple debian init script for nsca
-# by sean finney <seanius@debian.org>
 
 DAEMON=/usr/sbin/nsca
 NAME=nsca
@@ -17,64 +18,63 @@ CONF=/etc/nsca.cfg
 OPTS="--daemon -c $CONF"
 PIDFILE="/var/run/nsca.pid"
 
-###
-
 test -f $DAEMON || exit 0
 
-# grab an arbitrary config setting from nsca.cfg
-get_config(){
-	grep "^[[:space:]]*$1=" $CONF 2>/dev/null | tail | cut -d= -f2-
-}
+if ! [ -x "/lib/lsb/init-functions" ]; then
+    . /lib/lsb/init-functions
+else
+    echo "E: /lib/lsb/init-functions not found, lsb-base (>= 3.0-6) needed"
+    exit 1
+fi
+
+# support a default file
+if [ -f /etc/default/nsca ]; then
+    . /etc/default/nsca
+fi
 
 # if the pid_file is specified in the configuration file, nsca will
 # take care of the pid handling for us.  if it isn't we should continue
 # as we have before
-PIDFILE=`get_config pid_file`
+PIDFILE="$(confget -f $CONF pid_file)"
 # if pidfile isn't set
-if [ -z "$PIDFILE" ];  then 
+if [ -z "$PIDFILE" ];  then
 	# then this is the default PIDFILE
-	PIDFILE="/var/run/nsca.pid"
-	# run nsca in the foreground, and have s-s-d fork it for us
-	OPTS="-f $OPTS"
-	# and then this is how we call SSD
-	SSD_STARTOPTS="--background --pidfile $PIDFILE --make-pidfile"
-	SSD_STOPOPTS="--pidfile $PIDFILE"
-else
-	# but if pid_file is set, we don't have to do anything
-	SSD_STARTOPTS="--pidfile $PIDFILE"
-	SSD_STOPOPTS="--pidfile $PIDFILE"
+    log_failure_msg "Please set pid_file in /etc/nsca.conf"
+    exit 1
 fi
 
-SSD_START="start-stop-daemon --start --oknodo -S $SSD_STARTOPTS --exec $DAEMON"
-SSD_STOP="start-stop-daemon --stop --oknodo -K $SSD_STOPOPTS --exec $DAEMON"
-
-die(){
-	echo $@
-	exit 1
-}
+if [ ! -d "/var/run/nagios" ]; then
+    mkdir -p /var/run/nagios || log_failure_msg "couldn't create /var/run/nagios"
+    exit 1
+fi
 
 case "$1" in
 start)
-	echo -n "Starting $DESC: "
-	if [ ! -d "/var/run/nagios" ]; then
-		mkdir -p /var/run/nagios || die "ERROR: couldn't create /var/run/nagios"
-	fi
-	$SSD_START -- $OPTS || die "ERROR: could not start $NAME."
-	echo "$NAME."
+	log_daemon_msg "Starting $DESC" "$NAME"
+	start_daemon -p $PIDFILE $DAEMON $OPTS
+    log_end_msg $?
 ;;
 stop)
-	echo -n "Stopping $DESC: "
-	$SSD_STOP -- $OPTS || die "ERROR: could not stop $NAME."
-	rm -f $PIDFILE
-	echo "$NAME."
+	log_daemon_msg "Stopping $DESC" "$NAME"
+    start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+    log_end_msg $?
 ;;
 reload|force-reload)
-	echo -n "Reloading $DESC: "
-	$SSD_STOP --signal HUP -- $OPTS || die "ERROR: could not reload $NAME."
-	echo "$NAME."
+    log_daemon_msg "Reloading $DESC configuration files" "$NAME"
+    start-stop-daemon --stop --signal HUP --quiet --pidfile $PIDFILE
+	log_end_msg $?
 ;;
 restart)
 	$0 stop
 	$0 start
 ;;
+status)
+    status_of_proc -p $PIDFILE $DAEMON $NAME
+;;
+*)
+    log_failure_msg "Usage: $N {start|stop|restart|reload|force-reload|status}"
+    exit 1
+;;
 esac
+
+exit 0
