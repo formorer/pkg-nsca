@@ -2,7 +2,7 @@
  *
  * COMMON.H - NSCA Common Include File
  * Copyright (c) 1999-2003 Ethan Galstad (nagios@nagios.org)
- * Last Modified: 01-07-2003
+ * Last Modified: 01-27-2012
  *
  * License:
  *
@@ -24,8 +24,8 @@
 #include "config.h"
 
 
-#define PROGRAM_VERSION "2.9"
-#define MODIFICATION_DATE "10-31-2011"
+#define PROGRAM_VERSION "2.9.1"
+#define MODIFICATION_DATE "01-27-2012"
 
 
 #define OK		0
@@ -45,9 +45,19 @@
 
 #define MAX_HOST_ADDRESS_LENGTH	256	/* max size of a host address */
 
+/**************************************************************************************/
+/* WARNING!                                                                           */
+/*                                                                                    */
+/* Changing the lengths below may cause packet failures between clients and servers   */
+/* of different versions.                                                             */
+/**************************************************************************************/
+
 #define MAX_HOSTNAME_LENGTH	64
 #define MAX_DESCRIPTION_LENGTH	128
 #define MAX_PLUGINOUTPUT_LENGTH	4096
+
+#define OLD_PLUGINOUTPUT_LENGTH	512
+#define OLD_PACKET_LENGTH (( sizeof( data_packet) - ( MAX_PLUGINOUTPUT_LENGTH - OLD_PLUGINOUTPUT_LENGTH)))
 
 #define MAX_PASSWORD_LENGTH     512
 
@@ -120,3 +130,15 @@ typedef struct init_packet_struct{
 
 
 
+/**************** OPERATING SYSTEM SPECIFIC DEFINITIONS **********/
+#ifdef __sun
+
+#  ifndef LOG_AUTHPRIV
+#    define LOG_AUTHPRIV LOG_AUTH
+#  endif
+
+#  ifndef LOG_FTP
+#    define LOG_FTP LOG_DAEMON
+#  endif
+
+#endif
