@@ -1,5 +1,3 @@
 src/nsca usr/sbin
 sample-config/nsca.cfg etc
-src/send_nsca usr/sbin
-sample-config/send_nsca.cfg etc
 debian/lintian/overrides/nsca usr/share/lintian/overrides
